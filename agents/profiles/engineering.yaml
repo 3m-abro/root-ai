@@ -1,0 +1,21 @@
+id: engineering
+
+role: engineering_worker
+
+capabilities:
+  - software_development
+  - code_review
+  - testing
+  - architecture
+  - debugging
+  - devops
+  - git
+  - documentation
+
+approval_limit: 1
+
+execution_environment: LOCAL_PC
+
+can_delegate: true
+can_modify_configuration: false
+can_access_secrets: false

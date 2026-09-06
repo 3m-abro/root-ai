@@ -1,0 +1,38 @@
+worker:
+  required:
+    - id
+    - role
+    - capabilities
+    - approval_limit
+
+  fields:
+    id:
+      type: string
+
+    role:
+      type: string
+
+    capabilities:
+      type: list
+
+    approval_limit:
+      type: integer
+      values:
+        - 0
+        - 1
+        - 2
+
+    execution_environment:
+      type: enum
+      values:
+        - VPS
+        - LOCAL_PC
+
+    can_delegate:
+      type: boolean
+
+    can_modify_configuration:
+      type: boolean
+
+    can_access_secrets:
+      type: boolean

@@ -1,0 +1,18 @@
+id: operations
+
+role: operations_worker
+
+capabilities:
+  - workflow_management
+  - automation
+  - monitoring
+  - reporting
+  - scheduling
+
+approval_limit: 1
+
+execution_environment: VPS
+
+can_delegate: false
+can_modify_configuration: false
+can_access_secrets: false

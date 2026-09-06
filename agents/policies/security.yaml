@@ -1,0 +1,29 @@
+security_policy:
+
+  principles:
+    - least_privilege
+    - explicit_capabilities
+    - fail_closed
+    - audit_sensitive_actions
+    - separate_control_and_execution
+    - never_commit_secrets
+
+  prohibited:
+    - unrestricted_sudo
+    - unrestricted_remote_shell
+    - credential_exfiltration
+    - disabling_security_controls
+    - autonomous_security_boundary_changes
+
+  local_machine:
+    remote_access:
+      unrestricted: false
+
+    execution:
+      require_local_agent: true
+
+  secrets:
+    git_commit: forbidden
+    logs: forbidden
+    prompts: forbidden
+    model_context: minimize

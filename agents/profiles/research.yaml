@@ -1,0 +1,18 @@
+id: research
+
+role: research_worker
+
+capabilities:
+  - web_research
+  - information_synthesis
+  - competitor_research
+  - technical_research
+  - market_research
+
+approval_limit: 0
+
+execution_environment: VPS
+
+can_delegate: false
+can_modify_configuration: false
+can_access_secrets: false

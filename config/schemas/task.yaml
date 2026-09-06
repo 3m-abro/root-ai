@@ -1,0 +1,60 @@
+task:
+  required:
+    - id
+    - title
+    - objective
+    - owner
+    - state
+    - approval_level
+
+  fields:
+    id:
+      type: string
+
+    title:
+      type: string
+
+    objective:
+      type: string
+
+    owner:
+      type: enum
+      values:
+        - HUMAN
+        - ROOT
+        - WORKER
+        - AUTOMATION
+
+    state:
+      type: enum
+      values:
+        - HUMAN
+        - AI
+        - AUTOMATION
+        - DELEGATED
+        - WAITING
+        - PARKED
+        - BLOCKED
+        - COMPLETED
+
+    approval_level:
+      type: integer
+      values:
+        - 0
+        - 1
+        - 2
+        - 3
+
+    project:
+      type: string
+
+    next_action:
+      type: string
+
+    deadline:
+      type: datetime
+      optional: true
+
+    dependencies:
+      type: list
+      optional: true

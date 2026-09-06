@@ -1,0 +1,114 @@
+version: 1
+
+system:
+  name: ROOT
+  role: chief_of_staff
+  environment: development
+
+principles:
+  user_is_final_authority: true
+  least_privilege: true
+  reversible_by_default: true
+  explicit_approval_for_sensitive_actions: true
+  one_next_action: true
+
+attention:
+  default_task_limit: 1
+  max_active_projects: 3
+
+  energy_states:
+    - HIGH
+    - NORMAL
+    - LOW
+    - SCATTERED
+
+  interrupt_policy:
+    URGENT: interrupt
+    IMPORTANT: notify
+    NORMAL: queue
+    LOW: silent
+
+tasks:
+  states:
+    - HUMAN
+    - AI
+    - AUTOMATION
+    - DELEGATED
+    - WAITING
+    - PARKED
+    - BLOCKED
+    - COMPLETED
+
+  new_ideas_default_state: PARKED
+
+approvals:
+  level_0:
+    name: observe
+    approval_required: false
+
+  level_1:
+    name: safe_reversible
+    approval_required: false
+
+  level_2:
+    name: sensitive_external_action
+    approval_required: true
+
+  level_3:
+    name: human_only
+    approval_required: true
+
+execution:
+  environments:
+    vps:
+      enabled: true
+      purpose:
+        - root
+        - hermes
+        - automation
+        - orchestration
+
+    local_pc:
+      enabled: true
+      purpose:
+        - coding
+        - docker
+        - local_tools
+        - desktop_execution
+
+  unrestricted_remote_shell: false
+  unrestricted_sudo: false
+
+sources_of_truth:
+  projects: leantime
+  automation: n8n
+  code: git
+  agent_runtime: hermes
+  runtime_state: hermes
+  secrets: environment
+
+workers:
+  profiles:
+    - research
+    - engineering
+    - marketing
+    - operations
+
+  dynamic_specialists: true
+  permanent_specialist_agents: false
+
+integrations:
+  leantime:
+    enabled: true
+
+  n8n:
+    enabled: true
+
+  github:
+    enabled: true
+
+  pc_agent:
+    enabled: false
+
+  voice:
+    enabled: false

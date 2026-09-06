@@ -1,0 +1,33 @@
+approval_policy:
+
+  level_0:
+    description: observe, inspect, analyze, recommend
+    approval_required: false
+
+  level_1:
+    description: safe and reversible internal actions
+    approval_required: false
+
+  level_2:
+    description: external or consequential actions
+    approval_required: true
+
+    examples:
+      - send_external_message
+      - publish_content
+      - git_push
+      - production_deployment
+      - spending_money
+      - important_configuration_change
+
+  level_3:
+    description: human-only actions
+    approval_required: true
+
+    examples:
+      - destructive_irreversible_operation
+      - legal_commitment
+      - major_financial_commitment
+      - account_ownership_change
+      - security_boundary_change
+      - credential_rotation

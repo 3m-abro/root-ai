@@ -1,0 +1,18 @@
+id: marketing
+
+role: marketing_worker
+
+capabilities:
+  - market_research
+  - content_strategy
+  - content_creation
+  - campaign_planning
+  - analytics
+
+approval_limit: 1
+
+execution_environment: VPS
+
+can_delegate: false
+can_modify_configuration: false
+can_access_secrets: false
