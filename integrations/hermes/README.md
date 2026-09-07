@@ -30,4 +30,4 @@ Runtime state stays outside Git. Do not commit `HERMES_HOME`, session DBs, or da
 
 ## Phase 4
 
-Phase 4 adds a Hermes skill/tool on `chief` that calls the n8n Leantime RPC webhook (`/webhook/root-leantime-rpc`). Hermes still must not receive Leantime API keys or an arbitrary RPC escape hatch.
+Phase 4 adds a Hermes skill/tool on `chief` that calls the n8n Leantime RPC webhook (`POST /webhook/root/leantime/rpc`, header `x-root-api-key`). Hermes still must not receive Leantime API keys or an arbitrary RPC escape hatch.

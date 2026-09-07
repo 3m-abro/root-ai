@@ -1,0 +1,528 @@
+{
+  "name": "ROOT - Leantime RPC",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## ROOT → Leantime RPC\nBind both Header Auth credentials before publishing.\n- Call Leantime: `x-api-key` = Leantime API key\n- ROOT Webhook: `x-root-api-key` = separate ROOT secret\n\nPOST `{ \"operation\": \"list_projects\", \"params\": {} }`\n\nOnly `list_projects` is enabled. `get_project`, `list_tasks`, and `get_task` explicitly return HTTP 501; no guessed RPC methods are configured. Verify exact methods and schemas before extending validation and normalization.\n\nWorkflow-generated replies: `{ ok, operation, requestId, data, error }`. n8n rejects webhook authentication and malformed HTTP JSON before workflow execution, using its own error format.",
+        "height": 380,
+        "width": 650
+      },
+      "id": "9496a813-71b8-4dcf-91ff-d67828acd6cf",
+      "name": "Setup and Disabled Operations",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        1520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7b0e30d3-fbdf-4c58-ad18-df61490615b6",
+              "leftValue": "={{ $json.operation === 'complete_task' || ($json.operation === 'update_task' && $json.rpc.params.values.description === undefined) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "eebe2d26-7ad7-47cd-a8d6-25be739efe52",
+      "name": "Needs Description Read?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        192,
+        1968
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tasks.maqsoodabro.com/api/jsonrpc",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({jsonrpc: '2.0', method: 'leantime.rpc.Tickets.Tickets.getTicket', params: {id: $json.rpc.params.values.id}, id: $json.requestId}) }}",
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "76a582dd-6925-4ce3-b1ce-1da92c2997da",
+      "name": "Read Existing Ticket",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        1904
+      ],
+      "retryOnFail": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "6EKCh85A4dKYiIhL",
+          "name": "Leantime Read Header Auth"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const original=$('Validate Request').first().json;\nconst checked=(()=>{\nconst context={...$('Validate Request').first().json,operation:'get_task',write:false};\nconst {operation,requestId}=context;\nconst finish=(ok,data,error,httpStatus)=>[{json:{httpStatus,response:{ok,operation,requestId,data,error}}}];\nconst fail=(code,message,status=502)=>finish(false,null,{code,message},status);\nconst raw=$json;\nif (raw.error && !Object.prototype.hasOwnProperty.call(raw,'statusCode')) return fail('UPSTREAM_TRANSPORT_ERROR','Could not reach Leantime. For a write, verify the ticket before retrying; the outcome may be unknown.');\nif (!Number.isInteger(raw.statusCode) || raw.statusCode<200 || raw.statusCode>=300) return fail('UPSTREAM_HTTP_ERROR','Leantime returned an unsuccessful HTTP response.');\nlet body = Object.prototype.hasOwnProperty.call(raw, 'body') ? raw.body : raw.data;\nif (typeof body==='string') {try {body=JSON.parse(body);} catch {return fail('INVALID_UPSTREAM_RESPONSE','Leantime did not return JSON.');}}\nif (!body || typeof body!=='object' || Array.isArray(body) || body.jsonrpc!=='2.0' || body.id!==requestId) return fail('INVALID_UPSTREAM_RESPONSE','Invalid JSON-RPC envelope or mismatched response id.');\nconst has=k=>Object.prototype.hasOwnProperty.call(body,k);\nif (has('error') && body.error!==null) {\n const rpc=body.error;\n return finish(false,null,{code:'JSON_RPC_ERROR',message:typeof rpc.message==='string'?rpc.message:'Leantime returned a JSON-RPC error.',rpcCode:rpc.code ?? null},502);\n}\nif (!has('result')) return fail('INVALID_UPSTREAM_RESPONSE','JSON-RPC result is missing.');\nconst data=body.result;\nif (data===false || data===null || ((operation==='get_task'||operation==='get_project') && typeof data==='object' && Object.keys(data).length===0)) {\n const readOne=operation==='get_task'||operation==='get_project';\n return finish(false,data,{code:readOne?'NOT_FOUND':context.write?'WRITE_FAILED':'UPSTREAM_RESULT_ERROR',message:readOne?'No matching record was returned.':'Leantime returned a false or null result.'},readOne?404:502);\n}\nreturn finish(true,data,null,200);\n\n})();\nconst result=checked[0].json;\nif (!result.response.ok) {\n result.valid=false;\n result.response.operation=original.operation;\n return [{json:result}];\n}\nconst ticket=result.response.data;\nconst values=original.rpc.params.values;\nconst fail=message=>[{json:{valid:false,httpStatus:409,response:{ok:false,operation:original.operation,requestId:original.requestId,data:null,error:{code:'PRESERVATION_FAILED',message}}}}];\nif (String(ticket.id)!==String(values.id) || String(ticket.projectId)!==String(values.projectId)) return fail('Existing ticket does not match the requested ticket and project. No write sent.');\nif (!Object.prototype.hasOwnProperty.call(ticket,'description') || (ticket.description!==null && typeof ticket.description!=='string')) return fail('Existing description is missing or invalid. No write sent.');\nreturn [{json:{...original,valid:true,rpc:{...original.rpc,params:{values:{...values,description:ticket.description}}}}}];\n"
+      },
+      "id": "013aa6fc-5242-4ad9-8803-081d89424515",
+      "name": "Preserve Description",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        1904
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7b0e30d3-fbdf-4c58-ad18-df61490615b6",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "31581fc1-da0b-4b65-8aad-b893f7de7508",
+      "name": "Preservation Ready?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        1904
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "root/leantime/rpc",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "2949aee7-edc8-42a6-a534-72d2c29de7af",
+      "name": "ROOT Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -704,
+        2112
+      ],
+      "webhookId": "a8dded23-4e13-4c00-aeb3-1f3846ffba7a",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "K07ks4iDxQ92Sel9",
+          "name": "ROOT Webhook Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $json.body;\nconst object = v => v !== null && typeof v === 'object' && !Array.isArray(v);\nconst own = (o,k) => Object.prototype.hasOwnProperty.call(o,k);\nlet operation = object(b) && typeof b.operation === 'string' ? b.operation : null;\nlet requestId = object(b) && own(b,'requestId') ? b.requestId : `root-${$execution.id}`;\nconst fail = message => [{json:{valid:false,httpStatus:400,response:{ok:false,operation,requestId,data:null,error:{code:'VALIDATION_ERROR',message}}}}];\nconst keys = (o,allowed) => Object.keys(o).every(k=>allowed.includes(k));\nconst positive = v => Number.isSafeInteger(v) && v > 0;\nconst methods = {\n list_projects:'leantime.rpc.Projects.Projects.getAll',\n get_project:'leantime.rpc.Projects.Projects.getProject',\n list_tasks:'leantime.rpc.Tickets.Tickets.getAll',\n get_task:'leantime.rpc.Tickets.Tickets.getTicket',\n create_task:'leantime.rpc.Tickets.Tickets.addTicket',\n update_task:'leantime.rpc.Tickets.Tickets.updateTicket',\n complete_task:'leantime.rpc.Tickets.Tickets.updateTicket'\n};\nif (!(typeof requestId === 'string' && requestId.trim().length > 0 && requestId.length <= 128)) {\n requestId = null; return fail('requestId, when supplied, must be a nonempty string of at most 128 characters.');\n}\nif (!object(b) || !keys(b,['operation','params','requestId'])) return fail('Body must contain only operation, params, and optional requestId.');\nif (!own(methods,operation)) return fail('Unsupported operation.');\nconst p=b.params;\nif (!object(p)) return fail('params must be a JSON object.');\nlet params;\nif (operation==='list_projects') {\n if (!keys(p,[])) return fail('list_projects requires params: {}.');\n params={};\n} else if (operation==='get_project' || operation==='get_task') {\n if (!keys(p,['id']) || !positive(p.id)) return fail('Requires only a positive integer id.');\n params={id:p.id};\n} else if (operation==='list_tasks') {\n if (!keys(p,['searchCriteria']) || !object(p.searchCriteria) || !keys(p.searchCriteria,['projectId']) || !positive(p.searchCriteria.projectId)) return fail('Requires only searchCriteria.projectId as a positive integer.');\n params={searchCriteria:{projectId:p.searchCriteria.projectId}};\n} else {\n const create=operation==='create_task', complete=operation==='complete_task';\n const allowed=complete?['id','projectId']:create?['projectId','headline','description']:['id','projectId','headline','description'];\n if (!keys(p,allowed)) return fail('Unsupported parameter; raw RPC, status, userId and other fields are forbidden.');\n if (!positive(p.projectId) || (!create && !positive(p.id))) return fail('projectId and, for update/complete, id must be positive integers.');\n if ((create || own(p,'headline')) && (typeof p.headline !== 'string' || !p.headline.trim())) return fail('headline must be a nonempty string.');\n if (own(p,'description') && typeof p.description !== 'string') return fail('description must be a string; use an empty string to clear it.');\n if (!create && !complete && !own(p,'headline') && !own(p,'description')) return fail('update_task requires headline or description.');\n const values={projectId:p.projectId};\n if (!create) values.id=p.id;\n if (complete) values.status=0;\n else for (const k of ['headline','description']) if (own(p,k)) values[k]=p[k];\n params={values};\n}\nreturn [{json:{valid:true,operation,requestId,write:['create_task','update_task','complete_task'].includes(operation),rpc:{jsonrpc:'2.0',method:methods[operation],params,id:requestId}}}];\n"
+      },
+      "id": "45b71e92-a2f8-46f9-a7a5-208732844c5b",
+      "name": "Validate Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7b0e30d3-fbdf-4c58-ad18-df61490615b6",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4da733e6-74fa-46f1-97ce-f4811e908c91",
+      "name": "Valid Request?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "13d25806-1573-4a8f-9ddc-4c2699fa89ef",
+              "leftValue": "={{ $json.write }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e6023a43-0ae3-4c0b-8f24-3079adff98ca",
+      "name": "Write Operation?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -32,
+        2048
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.response }}",
+        "options": {
+          "responseCode": "={{ $json.httpStatus }}"
+        }
+      },
+      "id": "e6dee695-cb1f-45d8-a838-609a16b2e601",
+      "name": "Respond to ROOT",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1600,
+        2160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const context=$('Validate Request').first().json;\nconst {operation,requestId}=context;\nconst finish=(ok,data,error,httpStatus)=>[{json:{httpStatus,response:{ok,operation,requestId,data,error}}}];\nconst fail=(code,message,status=502)=>finish(false,null,{code,message},status);\nconst raw=$json;\nif (raw.error && !Object.prototype.hasOwnProperty.call(raw,'statusCode')) return fail('UPSTREAM_TRANSPORT_ERROR','Could not reach Leantime. For a write, verify the ticket before retrying; the outcome may be unknown.');\nif (!Number.isInteger(raw.statusCode) || raw.statusCode<200 || raw.statusCode>=300) return fail('UPSTREAM_HTTP_ERROR','Leantime returned an unsuccessful HTTP response.');\nlet body = Object.prototype.hasOwnProperty.call(raw, 'body') ? raw.body : raw.data;\nif (typeof body==='string') {try {body=JSON.parse(body);} catch {return fail('INVALID_UPSTREAM_RESPONSE','Leantime did not return JSON.');}}\nif (!body || typeof body!=='object' || Array.isArray(body) || body.jsonrpc!=='2.0' || body.id!==requestId) return fail('INVALID_UPSTREAM_RESPONSE','Invalid JSON-RPC envelope or mismatched response id.');\nconst has=k=>Object.prototype.hasOwnProperty.call(body,k);\nif (has('error') && body.error!==null) {\n const rpc=body.error;\n return finish(false,null,{code:'JSON_RPC_ERROR',message:typeof rpc.message==='string'?rpc.message:'Leantime returned a JSON-RPC error.',rpcCode:rpc.code ?? null},502);\n}\nif (!has('result')) return fail('INVALID_UPSTREAM_RESPONSE','JSON-RPC result is missing.');\nconst data=body.result;\nif (data===false || data===null || ((operation==='get_task'||operation==='get_project') && typeof data==='object' && Object.keys(data).length===0)) {\n const readOne=operation==='get_task'||operation==='get_project';\n return finish(false,data,{code:readOne?'NOT_FOUND':context.write?'WRITE_FAILED':'UPSTREAM_RESULT_ERROR',message:readOne?'No matching record was returned.':'Leantime returned a false or null result.'},readOne?404:502);\n}\nreturn finish(true,data,null,200);\n"
+      },
+      "id": "cf024b5f-9f6e-4bcd-9127-7330916cfe95",
+      "name": "Normalize Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1376,
+        2016
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tasks.maqsoodabro.com/api/jsonrpc",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.rpc) }}",
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "5248bef3-d62d-400d-a75d-016d4424328a",
+      "name": "Leantime Read",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        688,
+        2320
+      ],
+      "retryOnFail": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "6EKCh85A4dKYiIhL",
+          "name": "Leantime Read Header Auth"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tasks.maqsoodabro.com/api/jsonrpc",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.rpc) }}",
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "cbf34609-e838-4d31-94e9-9b14643a223f",
+      "name": "Leantime Write",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1056,
+        2048
+      ],
+      "retryOnFail": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ttrBU8BRoYLXuXet",
+          "name": "Leantime Write Header Auth"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Needs Description Read?": {
+      "main": [
+        [
+          {
+            "node": "Read Existing Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Leantime Write",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Existing Ticket": {
+      "main": [
+        [
+          {
+            "node": "Preserve Description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preserve Description": {
+      "main": [
+        [
+          {
+            "node": "Preservation Ready?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preservation Ready?": {
+      "main": [
+        [
+          {
+            "node": "Leantime Write",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to ROOT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ROOT Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Request": {
+      "main": [
+        [
+          {
+            "node": "Valid Request?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Request?": {
+      "main": [
+        [
+          {
+            "node": "Write Operation?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to ROOT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Operation?": {
+      "main": [
+        [
+          {
+            "node": "Needs Description Read?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Leantime Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to ROOT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leantime Read": {
+      "main": [
+        [
+          {
+            "node": "Normalize Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leantime Write": {
+      "main": [
+        [
+          {
+            "node": "Normalize Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "30869f41-fc7f-447c-b657-750c7f785055",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a79475f7095de8c37ff66ff0555048b9d09a434d2f5d3f0c0ad30a21a7b8cbc6"
+  },
+  "nodeGroups": [],
+  "id": "yiS4MwzEOFj8faSI",
+  "tags": []
+}

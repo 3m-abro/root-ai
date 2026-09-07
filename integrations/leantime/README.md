@@ -27,17 +27,21 @@ Hermes does not hold Leantime API keys.
 
 ## Verified RPC methods
 
+From the live n8n workflow (`ROOT - Leantime RPC`):
+
 | ROOT operation | Leantime method | Credential | Approval |
 | --- | --- | --- | --- |
-| `list_projects` | `leantime.rpc.projects.getAll` | read | 0 |
-| `get_project` | `leantime.rpc.projects.getProject` | read | 0 |
-| `list_tasks` | `leantime.rpc.tickets.getAll` | read | 0 |
-| `get_task` | `leantime.rpc.tickets.getTicket` | read | 0 |
-| `create_task` | `leantime.rpc.tickets.addTicket` | write | 1 |
-| `update_task` | `leantime.rpc.tickets.updateTicket` | write | 1 |
-| `complete_task` | `leantime.rpc.tickets.updateTicket` | write | 1 |
+| `list_projects` | `leantime.rpc.Projects.Projects.getAll` | read | 0 |
+| `get_project` | `leantime.rpc.Projects.Projects.getProject` | read | 0 |
+| `list_tasks` | `leantime.rpc.Tickets.Tickets.getAll` | read | 0 |
+| `get_task` | `leantime.rpc.Tickets.Tickets.getTicket` | read | 0 |
+| `create_task` | `leantime.rpc.Tickets.Tickets.addTicket` | write | 1 |
+| `update_task` | `leantime.rpc.Tickets.Tickets.updateTicket` | write | 1 |
+| `complete_task` | `leantime.rpc.Tickets.Tickets.updateTicket` | write | 1 |
 
 Contract: `config/integrations/leantime.yaml`
+
+Callers send `{ operation, params, requestId? }` with Leantime field names (`id`, `projectId`, `headline`). See `integrations/n8n/README.md`.
 
 ## Status mapping
 
@@ -45,7 +49,7 @@ Contract: `config/integrations/leantime.yaml`
 | --- | --- | --- |
 | done / complete | `status` | `0` |
 
-`complete_task` forces `status: 0`. Callers cannot pass `status`, `userId`, or `rpc_method`.
+`complete_task` forces `status: 0`. Callers cannot pass `status`, `userId`, or `rpc_method`. `complete_task` also requires `projectId` and preserves the existing description via a read-before-write.
 
 ## Not yet exposed
 

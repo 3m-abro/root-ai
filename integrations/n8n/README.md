@@ -28,19 +28,23 @@ n8n reports the result back to ROOT.
 
 ## Leantime RPC workflow
 
-Workflow name: `root-leantime-rpc`
+Live name: `ROOT - Leantime RPC`
 
-Webhook path (host is environment-specific, not in Git):
+Export (no credential secrets): `integrations/n8n/workflows/root-leantime-rpc.json`
+
+The sticky note in that export is stale. Trust `Validate Request`, not the note.
+
+Webhook path (host is environment-specific):
 
 ```text
-POST /webhook/root-leantime-rpc
+POST /webhook/root/leantime/rpc
 ```
 
 ### Auth
 
-- Header: `X-ROOT-TOKEN`
-- Value: environment / n8n credential (`ROOT_N8N_WEBHOOK_TOKEN`)
-- Missing or wrong token: reject
+- Header: `x-root-api-key`
+- Value: n8n credential `ROOT Webhook Header Auth`
+- Missing or wrong token: n8n rejects before the workflow runs
 - Token is never committed
 
 ### Request
@@ -48,21 +52,24 @@ POST /webhook/root-leantime-rpc
 ```json
 {
   "operation": "list_tasks",
-  "project_id": 12
+  "params": { "searchCriteria": { "projectId": 12 } },
+  "requestId": "optional-string-max-128"
 }
 ```
 
-`operation` is required. Additional fields are per-operation only:
+Body may contain only `operation`, `params`, and optional `requestId`.
 
-| Operation | Fields |
+| Operation | `params` |
 | --- | --- |
-| `list_projects` | — |
-| `get_project` | `project_id` |
-| `list_tasks` | `project_id` |
-| `get_task` | `task_id` |
-| `create_task` | `project_id`, `title`, `description?` |
-| `update_task` | `task_id`, `title?`, `description?` |
-| `complete_task` | `task_id` |
+| `list_projects` | `{}` |
+| `get_project` | `{ "id": <positive int> }` |
+| `list_tasks` | `{ "searchCriteria": { "projectId": <positive int> } }` |
+| `get_task` | `{ "id": <positive int> }` |
+| `create_task` | `{ "projectId", "headline", "description?" }` |
+| `update_task` | `{ "id", "projectId", "headline?"`, `"description?" }` — needs headline or description |
+| `complete_task` | `{ "id", "projectId" }` |
+
+IDs must be JSON integers (`Number.isSafeInteger && n > 0`). Strings are rejected. Field names are Leantime's (`headline`, `projectId`, `id`), not ROOT task-schema aliases.
 
 ### Response
 
@@ -72,7 +79,9 @@ Success:
 {
   "ok": true,
   "operation": "list_tasks",
-  "result": {}
+  "requestId": "root-…",
+  "data": {},
+  "error": null
 }
 ```
 
@@ -81,32 +90,47 @@ Failure:
 ```json
 {
   "ok": false,
-  "error": "unsupported_operation",
-  "operation": "delete_project"
+  "operation": "delete_project",
+  "requestId": "root-…",
+  "data": null,
+  "error": { "code": "VALIDATION_ERROR", "message": "Unsupported operation." }
 }
 ```
 
-Error codes: `missing_operation`, `unsupported_operation`, `invalid_id`, `forbidden_passthrough`.
+Validation failures are HTTP 400 with `error.code = VALIDATION_ERROR`. Upstream Leantime failures use 404/502 codes from `Normalize Response`.
 
 ### Allowlist
 
-Only the seven operations above. Arbitrary `rpc_method` / `method` values are rejected. n8n maps `operation` → Leantime method internally.
+Only the seven operations above. n8n maps `operation` → Leantime method internally. Arbitrary `rpc_method` / `method` / `status` / `userId` are rejected.
+
+| Operation | Method |
+| --- | --- |
+| `list_projects` | `leantime.rpc.Projects.Projects.getAll` |
+| `get_project` | `leantime.rpc.Projects.Projects.getProject` |
+| `list_tasks` | `leantime.rpc.Tickets.Tickets.getAll` |
+| `get_task` | `leantime.rpc.Tickets.Tickets.getTicket` |
+| `create_task` | `leantime.rpc.Tickets.Tickets.addTicket` |
+| `update_task` | `leantime.rpc.Tickets.Tickets.updateTicket` |
+| `complete_task` | `leantime.rpc.Tickets.Tickets.updateTicket` |
 
 ### Credentials
 
-| Credential | Used for |
+| n8n credential | Used for |
 | --- | --- |
-| `leantime_read` | list/get |
-| `leantime_write` | create/update/complete |
+| `Leantime Read Header Auth` | list/get, plus the pre-write ticket read |
+| `Leantime Write Header Auth` | create/update/complete |
 
 Read and write keys are separate. Neither belongs in Git or in Hermes.
 
+The export hardcodes the Leantime JSON-RPC URL. That is environment-specific, not a secret. Credential *values* stay in n8n.
+
 ### Fail-closed rules
 
-- Unsupported operation → rejected
-- Missing operation → rejected
+- Unsupported or missing operation → rejected
+- Extra body/param keys → rejected
 - Invalid IDs → rejected
 - `complete_task` writes `status: 0` itself
+- `complete_task` and `update_task` without `description` read the existing ticket first so the write cannot clobber description
 - `userId`, `status`, and `rpc_method` from the caller are not forwarded
 
 Executable contract: `integrations/n8n/leantime_rpc.py`

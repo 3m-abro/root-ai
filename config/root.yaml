@@ -114,14 +114,15 @@ integrations:
       read_write_separated: true
       source: environment
 
-  n8n:
-    enabled: true
-    role: automation_and_leantime_gateway
-    leantime_rpc:
-      workflow: root-leantime-rpc
-      webhook_path: /webhook/root-leantime-rpc
-      allowlist_only: true
-      reject_arbitrary_rpc: true
+    n8n:
+      enabled: true
+      role: automation_and_leantime_gateway
+      leantime_rpc:
+        workflow: ROOT - Leantime RPC
+        webhook_path: /webhook/root/leantime/rpc
+        auth_header: x-root-api-key
+        allowlist_only: true
+        reject_arbitrary_rpc: true
 
   github:
     enabled: true

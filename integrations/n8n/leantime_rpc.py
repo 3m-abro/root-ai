@@ -1,7 +1,8 @@
 """Allowlisted ROOT → n8n → Leantime RPC contract.
 
-Mirrors the Phase 3 n8n workflow rules so Hermes/Phase 4 can reuse them
-and so tests can lock the fail-closed behavior without talking to n8n.
+Port of the Validate Request node in
+integrations/n8n/workflows/root-leantime-rpc.json.
+Do not invent a parallel request shape for Phase 4.
 """
 
 from __future__ import annotations
@@ -9,178 +10,236 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 DONE_STATUS = 0
-WEBHOOK_PATH = "/webhook/root-leantime-rpc"
-AUTH_HEADER = "X-ROOT-TOKEN"
-
-FORBIDDEN_PASSTHROUGH = frozenset({"rpc_method", "method", "userId", "userid", "status"})
+WEBHOOK_PATH = "/webhook/root/leantime/rpc"
+AUTH_HEADER = "x-root-api-key"
+MAX_SAFE_INTEGER = 9007199254740991
+BODY_KEYS = ("operation", "params", "requestId")
+WRITE_OPERATIONS = frozenset({"create_task", "update_task", "complete_task"})
 
 OPERATIONS: dict[str, dict[str, Any]] = {
     "list_projects": {
         "approval_level": 0,
         "credential": "read",
-        "rpc_method": "leantime.rpc.projects.getAll",
-        "required": (),
-        "optional": (),
+        "rpc_method": "leantime.rpc.Projects.Projects.getAll",
     },
     "get_project": {
         "approval_level": 0,
         "credential": "read",
-        "rpc_method": "leantime.rpc.projects.getProject",
-        "required": ("project_id",),
-        "optional": (),
+        "rpc_method": "leantime.rpc.Projects.Projects.getProject",
     },
     "list_tasks": {
         "approval_level": 0,
         "credential": "read",
-        "rpc_method": "leantime.rpc.tickets.getAll",
-        "required": ("project_id",),
-        "optional": (),
+        "rpc_method": "leantime.rpc.Tickets.Tickets.getAll",
     },
     "get_task": {
         "approval_level": 0,
         "credential": "read",
-        "rpc_method": "leantime.rpc.tickets.getTicket",
-        "required": ("task_id",),
-        "optional": (),
+        "rpc_method": "leantime.rpc.Tickets.Tickets.getTicket",
     },
     "create_task": {
         "approval_level": 1,
         "credential": "write",
-        "rpc_method": "leantime.rpc.tickets.addTicket",
-        "required": ("project_id", "title"),
-        "optional": ("description",),
+        "rpc_method": "leantime.rpc.Tickets.Tickets.addTicket",
     },
     "update_task": {
         "approval_level": 1,
         "credential": "write",
-        "rpc_method": "leantime.rpc.tickets.updateTicket",
-        "required": ("task_id",),
-        "optional": ("title", "description"),
+        "rpc_method": "leantime.rpc.Tickets.Tickets.updateTicket",
     },
     "complete_task": {
         "approval_level": 1,
         "credential": "write",
-        "rpc_method": "leantime.rpc.tickets.updateTicket",
-        "required": ("task_id",),
-        "optional": (),
+        "rpc_method": "leantime.rpc.Tickets.Tickets.updateTicket",
     },
 }
 
 ALLOWED_OPERATIONS = frozenset(OPERATIONS)
 
 
-def parse_positive_id(value: Any, field: str) -> int:
+def is_object(value: Any) -> bool:
+    return isinstance(value, dict)
+
+
+def own(obj: Mapping[str, Any], key: str) -> bool:
+    return key in obj
+
+
+def keys_allowed(obj: Mapping[str, Any], allowed: tuple[str, ...]) -> bool:
+    return all(key in allowed for key in obj)
+
+
+def positive_id(value: Any) -> bool:
     if isinstance(value, bool) or value is None:
-        raise ValueError(field)
+        return False
     if isinstance(value, int):
-        parsed = value
-    elif isinstance(value, str) and value.strip().isdigit():
-        parsed = int(value.strip())
+        return 0 < value <= MAX_SAFE_INTEGER
+    if isinstance(value, float) and value.is_integer():
+        return 0 < value <= MAX_SAFE_INTEGER
+    return False
+
+
+def as_id(value: Any) -> int:
+    return int(value)
+
+
+def validate_request(
+    body: Mapping[str, Any] | None, *, execution_id: str = "local"
+) -> dict[str, Any]:
+    """Validate a webhook JSON body the same way n8n Validate Request does."""
+    operation = (
+        body.get("operation")
+        if is_object(body) and isinstance(body.get("operation"), str)
+        else None
+    )
+    if is_object(body) and own(body, "requestId"):
+        request_id: Any = body["requestId"]
     else:
-        raise ValueError(field)
-    if parsed <= 0:
-        raise ValueError(field)
-    return parsed
+        request_id = f"root-{execution_id}"
 
+    def fail(message: str) -> dict[str, Any]:
+        return {
+            "ok": False,
+            "valid": False,
+            "httpStatus": 400,
+            "response": {
+                "ok": False,
+                "operation": operation,
+                "requestId": request_id,
+                "data": None,
+                "error": {"code": "VALIDATION_ERROR", "message": message},
+            },
+        }
 
-def build_leantime_rpc(payload: Mapping[str, Any] | None) -> dict[str, Any]:
-    """Validate a webhook body and return the outbound Leantime RPC call.
+    if not (
+        isinstance(request_id, str)
+        and request_id.strip()
+        and len(request_id) <= 128
+    ):
+        request_id = None
+        return fail(
+            "requestId, when supplied, must be a nonempty string of at most 128 characters."
+        )
 
-    Never forwards caller-supplied rpc_method, userId, or status.
-    complete_task always writes status=DONE_STATUS.
-    """
-    if not payload or "operation" not in payload or payload.get("operation") in (None, ""):
-        return {"ok": False, "error": "missing_operation"}
-
-    operation = payload.get("operation")
+    if not is_object(body) or not keys_allowed(body, BODY_KEYS):
+        return fail("Body must contain only operation, params, and optional requestId.")
     if operation not in OPERATIONS:
-        return {"ok": False, "error": "unsupported_operation", "operation": operation}
+        return fail("Unsupported operation.")
 
-    forbidden = FORBIDDEN_PASSTHROUGH.intersection(payload.keys())
-    if forbidden:
-        return {
-            "ok": False,
-            "error": "forbidden_passthrough",
-            "operation": operation,
-            "fields": sorted(forbidden),
-        }
-
-    spec = OPERATIONS[operation]
-    allowed_keys = {"operation", *spec["required"], *spec["optional"]}
-    unknown = set(payload.keys()) - allowed_keys
-    if unknown:
-        return {
-            "ok": False,
-            "error": "forbidden_passthrough",
-            "operation": operation,
-            "fields": sorted(unknown),
-        }
+    params_in = body.get("params")
+    if not is_object(params_in):
+        return fail("params must be a JSON object.")
 
     try:
-        params = _params_for(operation, payload)
-    except ValueError:
-        return {"ok": False, "error": "invalid_id", "operation": operation}
+        params = _rpc_params(operation, params_in)
+    except ValueError as exc:
+        return fail(str(exc))
 
-    values = params.get("values") if isinstance(params, dict) else None
-    if operation == "update_task" and isinstance(values, dict) and set(values) == {"id"}:
-        return {"ok": False, "error": "missing_update_fields", "operation": operation}
-
+    spec = OPERATIONS[operation]
     return {
         "ok": True,
+        "valid": True,
         "operation": operation,
+        "requestId": request_id,
+        "write": operation in WRITE_OPERATIONS,
         "approval_level": spec["approval_level"],
         "credential": spec["credential"],
         "rpc_method": spec["rpc_method"],
         "params": params,
+        "rpc": {
+            "jsonrpc": "2.0",
+            "method": spec["rpc_method"],
+            "params": params,
+            "id": request_id,
+        },
     }
 
 
-def _params_for(operation: str, payload: Mapping[str, Any]) -> dict[str, Any]:
+def needs_description_read(validated: Mapping[str, Any]) -> bool:
+    """True when n8n reads the existing ticket before writing."""
+    if not validated.get("ok"):
+        return False
+    operation = validated["operation"]
+    values = validated.get("rpc", {}).get("params", {}).get("values", {})
+    return operation == "complete_task" or (
+        operation == "update_task" and "description" not in values
+    )
+
+
+def _rpc_params(operation: str, params: Mapping[str, Any]) -> dict[str, Any]:
     if operation == "list_projects":
+        if not keys_allowed(params, ()):
+            raise ValueError("list_projects requires params: {}.")
         return {}
 
-    if operation == "get_project":
-        return {"id": parse_positive_id(payload.get("project_id"), "project_id")}
+    if operation in {"get_project", "get_task"}:
+        if not keys_allowed(params, ("id",)) or not positive_id(params.get("id")):
+            raise ValueError("Requires only a positive integer id.")
+        return {"id": as_id(params["id"])}
 
     if operation == "list_tasks":
-        project_id = parse_positive_id(payload.get("project_id"), "project_id")
-        return {"searchCriteria": {"currentProject": project_id}}
+        criteria = params.get("searchCriteria")
+        if (
+            not keys_allowed(params, ("searchCriteria",))
+            or not is_object(criteria)
+            or not keys_allowed(criteria, ("projectId",))
+            or not positive_id(criteria.get("projectId"))
+        ):
+            raise ValueError(
+                "Requires only searchCriteria.projectId as a positive integer."
+            )
+        return {"searchCriteria": {"projectId": as_id(criteria["projectId"])}}
 
-    if operation == "get_task":
-        return {"id": parse_positive_id(payload.get("task_id"), "task_id")}
-
-    if operation == "create_task":
-        values: dict[str, Any] = {
-            "projectId": parse_positive_id(payload.get("project_id"), "project_id"),
-            "headline": str(payload.get("title") or "").strip(),
-            "type": "task",
-        }
-        if not values["headline"]:
-            raise ValueError("title")
-        description = payload.get("description")
-        if description not in (None, ""):
-            values["description"] = str(description)
-        return {"values": values}
-
-    if operation == "update_task":
-        values: dict[str, Any] = {
-            "id": parse_positive_id(payload.get("task_id"), "task_id"),
-        }
-        if "title" in payload:
-            headline = str(payload.get("title") or "").strip()
-            if not headline:
-                raise ValueError("title")
-            values["headline"] = headline
-        if "description" in payload:
-            values["description"] = str(payload.get("description") or "")
-        return {"values": values}
-
-    if operation == "complete_task":
-        return {
-            "values": {
-                "id": parse_positive_id(payload.get("task_id"), "task_id"),
-                "status": DONE_STATUS,
-            }
-        }
+    if operation in {"create_task", "update_task", "complete_task"}:
+        return _write_params(operation, params)
 
     raise AssertionError(f"unhandled operation: {operation}")
+
+
+def _write_params(operation: str, params: Mapping[str, Any]) -> dict[str, Any]:
+    create = operation == "create_task"
+    complete = operation == "complete_task"
+    if complete:
+        allowed = ("id", "projectId")
+    elif create:
+        allowed = ("projectId", "headline", "description")
+    else:
+        allowed = ("id", "projectId", "headline", "description")
+
+    if not keys_allowed(params, allowed):
+        raise ValueError(
+            "Unsupported parameter; raw RPC, status, userId and other fields are forbidden."
+        )
+    if not positive_id(params.get("projectId")) or (
+        not create and not positive_id(params.get("id"))
+    ):
+        raise ValueError(
+            "projectId and, for update/complete, id must be positive integers."
+        )
+    if (create or own(params, "headline")) and (
+        not isinstance(params.get("headline"), str) or not params["headline"].strip()
+    ):
+        raise ValueError("headline must be a nonempty string.")
+    if own(params, "description") and not isinstance(params.get("description"), str):
+        raise ValueError("description must be a string; use an empty string to clear it.")
+    if (
+        not create
+        and not complete
+        and not own(params, "headline")
+        and not own(params, "description")
+    ):
+        raise ValueError("update_task requires headline or description.")
+
+    values: dict[str, Any] = {"projectId": as_id(params["projectId"])}
+    if not create:
+        values["id"] = as_id(params["id"])
+    if complete:
+        values["status"] = DONE_STATUS
+    else:
+        for key in ("headline", "description"):
+            if own(params, key):
+                values[key] = params[key]
+    return {"values": values}
+
+
+build_leantime_rpc = validate_request

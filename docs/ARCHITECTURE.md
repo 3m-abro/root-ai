@@ -34,13 +34,13 @@ Also:
 ```text
 ROOT / Hermes (`chief`)
         |
-        |  POST /webhook/root-leantime-rpc
-        |  header: X-ROOT-TOKEN
-        |  body: { operation, ...allowlisted fields }
+        |  POST /webhook/root/leantime/rpc
+        |  header: x-root-api-key
+        |  body: { operation, params, requestId? }
         v
        n8n
         |
-        |  read credential  → list/get operations
+        |  read credential  → list/get + pre-write ticket read
         |  write credential → create/update/complete
         |  unknown operations / arbitrary RPC → rejected
         v
