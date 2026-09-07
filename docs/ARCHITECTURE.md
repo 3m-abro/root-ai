@@ -4,15 +4,12 @@
 
 YOU
   |
-  +-- Web
-  +-- Voice
+  +-- Web (Hermes dashboard, Tailscale private)
+  +-- Voice (not implemented)
   +-- CLI
   |
   v
-ROOT
-  |
-  v
-Hermes
+ROOT / Hermes (`chief`)
   |
   +-- Personal Execution
   +-- Business Operations
@@ -21,10 +18,36 @@ Hermes
   +-- Marketing
   +-- Operations
   |
-  +-- Leantime
-  +-- n8n
-  +-- Claude Code
-  +-- Local ROOT Agent
+  v
+n8n  (allowlisted Leantime RPC + other automations)
+  |
+  v
+Leantime  (projects / tasks source of truth)
+
+Also:
+
+  +-- Git (configuration source of truth)
+  +-- Claude Code / Local ROOT Agent (not yet wired)
+
+## Runtime Path (Phase 3)
+
+```text
+ROOT / Hermes (`chief`)
+        |
+        |  POST /webhook/root-leantime-rpc
+        |  header: X-ROOT-TOKEN
+        |  body: { operation, ...allowlisted fields }
+        v
+       n8n
+        |
+        |  read credential  → list/get operations
+        |  write credential → create/update/complete
+        |  unknown operations / arbitrary RPC → rejected
+        v
+    Leantime JSON-RPC
+```
+
+The dashboard binds to `127.0.0.1:9119` and is exposed only on the tailnet via Tailscale Serve. It is not a public internet service.
 
 ## Responsibilities
 
@@ -39,11 +62,12 @@ ROOT
 Hermes
 - Agent runtime
 - Sessions
-- Profiles
+- Profiles (`chief` is the live ROOT profile)
 - Skills
 - Delegation
 - Memory
 - Scheduling
+- Web dashboard / gateway
 
 Leantime
 - Goals
@@ -57,6 +81,7 @@ n8n
 - External integrations
 - Scheduled workflows
 - Notifications
+- Allowlisted Leantime RPC gateway
 
 Git
 - ROOT configuration

@@ -1,5 +1,7 @@
 # Phase 1B — ROOT Contracts
 
+Historical phase snapshot. Current status: [ROADMAP.md](ROADMAP.md). Hermes, dashboard, and Leantime RPC landed in Phases 2–3.
+
 ## Objective
 
 Define ROOT's configuration, workers, policies and integration boundaries before installing runtime components.

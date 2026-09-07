@@ -87,6 +87,13 @@ sources_of_truth:
   runtime_state: hermes
   secrets: environment
 
+runtime:
+  hermes_profile: chief
+  dashboard:
+    bind: 127.0.0.1
+    port: 9119
+    exposure: tailscale_serve
+
 workers:
   profiles:
     - research
@@ -100,9 +107,21 @@ workers:
 integrations:
   leantime:
     enabled: true
+    access: n8n_rpc
+    contract: config/integrations/leantime.yaml
+    path: ROOT/Hermes → n8n → Leantime
+    credentials:
+      read_write_separated: true
+      source: environment
 
   n8n:
     enabled: true
+    role: automation_and_leantime_gateway
+    leantime_rpc:
+      workflow: root-leantime-rpc
+      webhook_path: /webhook/root-leantime-rpc
+      allowlist_only: true
+      reject_arbitrary_rpc: true
 
   github:
     enabled: true

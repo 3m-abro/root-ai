@@ -1,0 +1,84 @@
+# Non-secret Leantime contract metadata.
+# URLs, API keys, and webhook tokens stay in environment / n8n credentials.
+
+version: 1
+
+source_of_truth: projects
+access: n8n_rpc
+workflow: root-leantime-rpc
+webhook_path: /webhook/root-leantime-rpc
+
+credentials:
+  read_write_separated: true
+  source: environment
+  read: leantime_read
+  write: leantime_write
+
+status:
+  done_status: 0
+
+forbidden_passthrough:
+  - rpc_method
+  - method
+  - userId
+  - status
+
+allowlist_only: true
+reject_arbitrary_rpc: true
+
+operations:
+  list_projects:
+    approval_level: 0
+    credential: read
+    rpc_method: leantime.rpc.projects.getAll
+    required: []
+
+  get_project:
+    approval_level: 0
+    credential: read
+    rpc_method: leantime.rpc.projects.getProject
+    required:
+      - project_id
+
+  list_tasks:
+    approval_level: 0
+    credential: read
+    rpc_method: leantime.rpc.tickets.getAll
+    required:
+      - project_id
+
+  get_task:
+    approval_level: 0
+    credential: read
+    rpc_method: leantime.rpc.tickets.getTicket
+    required:
+      - task_id
+
+  create_task:
+    approval_level: 1
+    credential: write
+    rpc_method: leantime.rpc.tickets.addTicket
+    required:
+      - project_id
+      - title
+    optional:
+      - description
+
+  update_task:
+    approval_level: 1
+    credential: write
+    rpc_method: leantime.rpc.tickets.updateTicket
+    required:
+      - task_id
+    optional:
+      - title
+      - description
+
+  complete_task:
+    approval_level: 1
+    credential: write
+    rpc_method: leantime.rpc.tickets.updateTicket
+    required:
+      - task_id
+    forced:
+      status: 0
