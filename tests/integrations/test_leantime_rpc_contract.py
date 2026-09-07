@@ -1,10 +1,12 @@
 import importlib.util
+import json
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_YAML = ROOT / "config" / "integrations" / "leantime.yaml"
 MODULE_PATH = ROOT / "integrations" / "n8n" / "leantime_rpc.py"
+WORKFLOW_PATH = ROOT / "integrations" / "n8n" / "workflows" / "root-leantime-rpc.json"
 
 
 def load_contract():
@@ -106,6 +108,10 @@ class LeantimeRpcContractTests(unittest.TestCase):
                     "method": "leantime.rpc.Tickets.Tickets.addTicket",
                 },
             },
+            {
+                "operation": "complete_task",
+                "params": {"id": 9, "projectId": 1, "priority": 1},
+            },
         ]
         for payload in attacks:
             with self.subTest(payload=payload):
@@ -168,8 +174,105 @@ class LeantimeRpcContractTests(unittest.TestCase):
         )
         self.assertFalse(result["ok"])
         self.assertEqual(
-            error_message(result), "update_task requires headline or description."
+            error_message(result),
+            "update_task requires at least one of headline, description, priority, tags, dateToFinish.",
         )
+
+    def test_update_task_accepts_priority_tags_and_due_date(self):
+        result = rpc.validate_request(
+            {
+                "operation": "update_task",
+                "params": {
+                    "id": 9,
+                    "projectId": 1,
+                    "priority": 2,
+                    "tags": "root,integration",
+                    "dateToFinish": "2026-09-21",
+                },
+            }
+        )
+        self.assertTrue(result["ok"], result)
+        values = result["rpc"]["params"]["values"]
+        self.assertEqual(values["id"], 9)
+        self.assertEqual(values["projectId"], 1)
+        self.assertEqual(values["priority"], 2)
+        self.assertEqual(values["tags"], "root,integration")
+        self.assertEqual(values["dateToFinish"], "2026-09-21")
+        self.assertNotIn("headline", values)
+        self.assertNotIn("description", values)
+        self.assertNotIn("status", values)
+        self.assertTrue(rpc.needs_description_read(result))
+
+    def test_create_task_accepts_optional_priority_tags_and_due_date(self):
+        result = rpc.validate_request(
+            {
+                "operation": "create_task",
+                "params": {
+                    "projectId": 3,
+                    "headline": "Draft",
+                    "priority": 1,
+                    "tags": "clearstack",
+                    "dateToFinish": "2026-10-01",
+                },
+            }
+        )
+        self.assertTrue(result["ok"], result)
+        values = result["rpc"]["params"]["values"]
+        self.assertEqual(values["headline"], "Draft")
+        self.assertEqual(values["priority"], 1)
+        self.assertEqual(values["tags"], "clearstack")
+        self.assertEqual(values["dateToFinish"], "2026-10-01")
+        self.assertNotIn("status", values)
+
+    def test_ticket_optional_fields_rejected_when_invalid(self):
+        cases = [
+            (
+                {
+                    "operation": "update_task",
+                    "params": {"id": 9, "projectId": 1, "priority": 0},
+                },
+                "priority must be an integer from 1 to 5.",
+            ),
+            (
+                {
+                    "operation": "update_task",
+                    "params": {"id": 9, "projectId": 1, "priority": "2"},
+                },
+                "priority must be an integer from 1 to 5.",
+            ),
+            (
+                {
+                    "operation": "update_task",
+                    "params": {"id": 9, "projectId": 1, "tags": ["root"]},
+                },
+                "tags must be a string.",
+            ),
+            (
+                {
+                    "operation": "update_task",
+                    "params": {"id": 9, "projectId": 1, "dateToFinish": "2026-13-01"},
+                },
+                "dateToFinish must be a YYYY-MM-DD string or empty to clear.",
+            ),
+        ]
+        for payload, message in cases:
+            with self.subTest(payload=payload):
+                result = rpc.validate_request(payload)
+                self.assertFalse(result["ok"])
+                self.assertEqual(error_code(result), "VALIDATION_ERROR")
+                self.assertEqual(error_message(result), message)
+
+    def test_update_task_can_clear_tags_and_due_date(self):
+        result = rpc.validate_request(
+            {
+                "operation": "update_task",
+                "params": {"id": 9, "projectId": 1, "tags": "", "dateToFinish": ""},
+            }
+        )
+        self.assertTrue(result["ok"], result)
+        values = result["rpc"]["params"]["values"]
+        self.assertEqual(values["tags"], "")
+        self.assertEqual(values["dateToFinish"], "")
 
     def test_yaml_contract_matches_allowlist(self):
         self.assertTrue(CONTRACT_YAML.is_file(), CONTRACT_YAML)
@@ -181,6 +284,24 @@ class LeantimeRpcContractTests(unittest.TestCase):
         for operation in rpc.ALLOWED_OPERATIONS:
             self.assertIn(f"{operation}:", yaml_text)
         self.assertIn("leantime.rpc.Tickets.Tickets.getTicket", yaml_text)
+        self.assertIn("priority", yaml_text)
+        self.assertIn("tags", yaml_text)
+        self.assertIn("dateToFinish", yaml_text)
+
+    def test_workflow_validator_mirrors_ticket_optional_fields(self):
+        workflow = json.loads(WORKFLOW_PATH.read_text(encoding="utf-8"))
+        node = next(n for n in workflow["nodes"] if n["name"] == "Validate Request")
+        js = node["parameters"]["jsCode"]
+        self.assertIn("priority", js)
+        self.assertIn("tags", js)
+        self.assertIn("dateToFinish", js)
+        self.assertIn(
+            "update_task requires at least one of headline, description, priority, tags, dateToFinish.",
+            js,
+        )
+        self.assertIn("priority must be an integer from 1 to 5.", js)
+        self.assertIn("dateToFinish must be a YYYY-MM-DD string or empty to clear.", js)
+        self.assertIn("Date.UTC", js)
 
     def test_read_write_credential_split(self):
         reads = ["list_projects", "get_project", "list_tasks", "get_task"]

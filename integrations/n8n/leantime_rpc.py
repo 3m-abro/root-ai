@@ -7,6 +7,7 @@ Do not invent a parallel request shape for Phase 4.
 
 from __future__ import annotations
 
+from datetime import date
 from typing import Any, Mapping
 
 DONE_STATUS = 0
@@ -15,6 +16,15 @@ AUTH_HEADER = "x-root-api-key"
 MAX_SAFE_INTEGER = 9007199254740991
 BODY_KEYS = ("operation", "params", "requestId")
 WRITE_OPERATIONS = frozenset({"create_task", "update_task", "complete_task"})
+TICKET_OPTIONAL_FIELDS = (
+    "headline",
+    "description",
+    "priority",
+    "tags",
+    "dateToFinish",
+)
+PRIORITY_MIN = 1
+PRIORITY_MAX = 5
 
 OPERATIONS: dict[str, dict[str, Any]] = {
     "list_projects": {
@@ -196,15 +206,43 @@ def _rpc_params(operation: str, params: Mapping[str, Any]) -> dict[str, Any]:
     raise AssertionError(f"unhandled operation: {operation}")
 
 
+def _ticket_priority(value: Any) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValueError("priority must be an integer from 1 to 5.")
+    if value < PRIORITY_MIN or value > PRIORITY_MAX:
+        raise ValueError("priority must be an integer from 1 to 5.")
+    return value
+
+
+def _ticket_date_to_finish(value: Any) -> str:
+    if not isinstance(value, str):
+        raise ValueError(
+            "dateToFinish must be a YYYY-MM-DD string or empty to clear."
+        )
+    if value == "":
+        return value
+    try:
+        parsed = date.fromisoformat(value)
+    except ValueError as exc:
+        raise ValueError(
+            "dateToFinish must be a YYYY-MM-DD string or empty to clear."
+        ) from exc
+    if parsed.isoformat() != value:
+        raise ValueError(
+            "dateToFinish must be a YYYY-MM-DD string or empty to clear."
+        )
+    return value
+
+
 def _write_params(operation: str, params: Mapping[str, Any]) -> dict[str, Any]:
     create = operation == "create_task"
     complete = operation == "complete_task"
     if complete:
         allowed = ("id", "projectId")
     elif create:
-        allowed = ("projectId", "headline", "description")
+        allowed = ("projectId",) + TICKET_OPTIONAL_FIELDS
     else:
-        allowed = ("id", "projectId", "headline", "description")
+        allowed = ("id", "projectId") + TICKET_OPTIONAL_FIELDS
 
     if not keys_allowed(params, allowed):
         raise ValueError(
@@ -222,13 +260,21 @@ def _write_params(operation: str, params: Mapping[str, Any]) -> dict[str, Any]:
         raise ValueError("headline must be a nonempty string.")
     if own(params, "description") and not isinstance(params.get("description"), str):
         raise ValueError("description must be a string; use an empty string to clear it.")
-    if (
-        not create
-        and not complete
-        and not own(params, "headline")
-        and not own(params, "description")
+    if own(params, "priority"):
+        params = {**params, "priority": _ticket_priority(params["priority"])}
+    if own(params, "tags") and not isinstance(params.get("tags"), str):
+        raise ValueError("tags must be a string.")
+    if own(params, "dateToFinish"):
+        params = {
+            **params,
+            "dateToFinish": _ticket_date_to_finish(params["dateToFinish"]),
+        }
+    if not create and not complete and not any(
+        own(params, key) for key in TICKET_OPTIONAL_FIELDS
     ):
-        raise ValueError("update_task requires headline or description.")
+        raise ValueError(
+            "update_task requires at least one of headline, description, priority, tags, dateToFinish."
+        )
 
     values: dict[str, Any] = {"projectId": as_id(params["projectId"])}
     if not create:
@@ -236,7 +282,7 @@ def _write_params(operation: str, params: Mapping[str, Any]) -> dict[str, Any]:
     if complete:
         values["status"] = DONE_STATUS
     else:
-        for key in ("headline", "description"):
+        for key in TICKET_OPTIONAL_FIELDS:
             if own(params, key):
                 values[key] = params[key]
     return {"values": values}

@@ -65,11 +65,13 @@ Body may contain only `operation`, `params`, and optional `requestId`.
 | `get_project` | `{ "id": <positive int> }` |
 | `list_tasks` | `{ "searchCriteria": { "projectId": <positive int> } }` |
 | `get_task` | `{ "id": <positive int> }` |
-| `create_task` | `{ "projectId", "headline", "description?" }` |
-| `update_task` | `{ "id", "projectId", "headline?"`, `"description?" }` — needs headline or description |
+| `create_task` | `{ "projectId", "headline", "description?", "priority?", "tags?", "dateToFinish?" }` |
+| `update_task` | `{ "id", "projectId" }` plus at least one of `headline`, `description`, `priority`, `tags`, `dateToFinish` |
 | `complete_task` | `{ "id", "projectId" }` |
 
-IDs must be JSON integers (`Number.isSafeInteger && n > 0`). Strings are rejected. Field names are Leantime's (`headline`, `projectId`, `id`), not ROOT task-schema aliases.
+IDs must be JSON integers (`Number.isSafeInteger && n > 0`). Strings are rejected. Field names are Leantime's (`headline`, `projectId`, `id`, `dateToFinish`), not ROOT task-schema aliases.
+
+`priority` is an integer `1`–`5`. `tags` is a string. `dateToFinish` is `YYYY-MM-DD`, or `""` to clear `tags` / `dateToFinish`.
 
 ### Response
 

@@ -22,7 +22,7 @@ Phase 10  Autonomous operating loop
 | 1 Runtime contracts/policies | complete |
 | 2 Hermes + private dashboard | complete |
 | 3 n8n + Leantime integration | complete |
-| 4 Hermes skill → n8n | next |
+| 4 Hermes skill → n8n | in progress |
 | 5–10 | not started |
 
 Phase 4 wires the live `chief` profile to the existing n8n Leantime RPC contract. Do not bypass that contract for a demo.

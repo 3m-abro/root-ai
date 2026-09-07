@@ -24,7 +24,7 @@ n8n is the only component that holds Leantime API credentials. Hermes does not c
 | `update_task` | 1 | write | `leantime.rpc.Tickets.Tickets.updateTicket` |
 | `complete_task` | 1 | write | `leantime.rpc.Tickets.Tickets.updateTicket` |
 
-`complete_task` always writes `status: 0` (`done_status`). Caller-supplied `status` is rejected, not forwarded. Writes that omit `description` re-read the ticket first so n8n cannot blank it.
+`complete_task` always writes `status: 0` (`done_status`). Caller-supplied `status` is rejected, not forwarded. Writes that omit `description` re-read the ticket first so n8n cannot blank it. `create_task` / `update_task` may also send allowlisted `priority` (1–5), `tags` (string), and `dateToFinish` (`YYYY-MM-DD` or `""` to clear).
 
 ## Contract rules
 
@@ -52,6 +52,6 @@ The sticky note inside the export is stale (`list_projects` only / HTTP 501). Th
 
 ## Not in this phase
 
-- Hermes skill/tool that calls the webhook (Phase 4)
+- Wiring the Git-owned Hermes skill into the live `chief` profile (Phase 4)
 - Milestone RPC
 - Arbitrary Leantime method proxy

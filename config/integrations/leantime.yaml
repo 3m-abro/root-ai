@@ -44,6 +44,25 @@ ids:
   type: integer
   rule: Number.isSafeInteger && value > 0
 
+ticket_fields:
+  priority:
+    type: integer
+    min: 1
+    max: 5
+    mapping:
+      1: Critical
+      2: High
+      3: Medium
+      4: Low
+      5: Lowest
+  tags:
+    type: string
+    empty_clears: true
+  dateToFinish:
+    type: string
+    format: YYYY-MM-DD
+    empty_clears: true
+
 operations:
   list_projects:
     approval_level: 0
@@ -85,6 +104,9 @@ operations:
         - headline
       optional:
         - description
+        - priority
+        - tags
+        - dateToFinish
 
   update_task:
     approval_level: 1
@@ -97,6 +119,9 @@ operations:
       one_of:
         - headline
         - description
+        - priority
+        - tags
+        - dateToFinish
     preserve_description_if_omitted: true
 
   complete_task:

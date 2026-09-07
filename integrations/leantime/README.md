@@ -41,7 +41,7 @@ From the live n8n workflow (`ROOT - Leantime RPC`):
 
 Contract: `config/integrations/leantime.yaml`
 
-Callers send `{ operation, params, requestId? }` with Leantime field names (`id`, `projectId`, `headline`). See `integrations/n8n/README.md`.
+Callers send `{ operation, params, requestId? }` with Leantime field names (`id`, `projectId`, `headline`, `priority`, `tags`, `dateToFinish`). See `integrations/n8n/README.md`.
 
 ## Status mapping
 
