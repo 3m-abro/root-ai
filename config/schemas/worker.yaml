@@ -15,6 +15,12 @@ worker:
     capabilities:
       type: list
 
+    description:
+      type: string
+
+    cannot:
+      type: list
+
     approval_limit:
       type: integer
       values:

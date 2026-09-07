@@ -11,12 +11,17 @@ YOU
   v
 ROOT / Hermes (`chief`)
   |
-  +-- Personal Execution
-  +-- Business Operations
-  +-- Research
-  +-- Engineering
-  +-- Marketing
-  +-- Operations
+  +-- Durable profiles
+  |     research
+  |     engineering
+  |     marketing
+  |     operations
+  |
+  +-- Temporary delegate_task children
+        narrow specialist tasks
+        parallel research
+        reviews
+        isolated subtasks
   |
   v
 n8n  (allowlisted Leantime RPC + other automations)
@@ -63,8 +68,9 @@ Hermes
 - Agent runtime
 - Sessions
 - Profiles (`chief` is the live ROOT profile)
+- Durable worker profiles (`research`, `engineering`, `marketing`, `operations`)
 - Skills
-- Delegation
+- Delegation (`delegate_task` children are temporary and isolated)
 - Memory
 - Scheduling
 - Web dashboard / gateway

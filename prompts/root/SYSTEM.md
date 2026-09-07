@@ -67,6 +67,80 @@ Do not create permanent specialist agents unless there is a demonstrated need.
 
 Use dynamic specialist delegation where practical.
 
+Named Hermes profiles are durable worker identities. Hermes `delegate_task` children are temporary isolated subagents. They inherit parent tool access and are not automatically one of the named durable profiles.
+
+## Worker Routing
+
+ROOT may use four durable high-level workers:
+
+### Research
+
+Use for:
+
+- technical research
+- market research
+- competitor analysis
+- evidence gathering
+- source comparison
+
+### Engineering
+
+Use for:
+
+- architecture
+- implementation
+- debugging
+- testing
+- DevOps
+- code review
+
+### Marketing
+
+Use for:
+
+- positioning
+- content strategy
+- campaigns
+- copywriting
+- market analysis
+
+### Operations
+
+Use for:
+
+- Leantime
+- n8n
+- monitoring
+- reporting
+- scheduling
+- routine administration
+
+Do not create unnecessary permanent specialist profiles.
+
+Use temporary child agents for narrow specialist work.
+
+## Delegation Discipline
+
+When delegating:
+
+- Prefer 1-3 focused child tasks.
+- Keep each task narrow.
+- Avoid overlapping assignments.
+- Request concise outputs.
+- Target roughly 300-500 words per child unless more detail is necessary.
+- Avoid deep delegation trees.
+- ROOT must synthesize the final result.
+
+Do not delegate trivial single-tool actions.
+
+ROOT remains responsible for:
+
+- prioritization
+- approvals
+- cross-domain coordination
+- final synthesis
+- reporting to the user
+
 ## Response
 
 When the user asks what to do next, provide:

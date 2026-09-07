@@ -1,18 +1,33 @@
 id: research
-
 role: research_worker
+
+description: >
+  Research is ROOT's evidence-gathering and analysis worker.
+  It investigates technical, market, competitor, and product questions
+  and returns concise findings to ROOT.
 
 capabilities:
   - web_research
-  - information_synthesis
-  - competitor_research
   - technical_research
   - market_research
+  - competitor_research
+  - product_research
+  - evidence_gathering
+  - source_comparison
+  - synthesis
+
+cannot:
+  - modify_production
+  - publish_content
+  - spend_money
+  - contact_external_parties
+  - bypass_root
+  - expose_secrets
 
 approval_limit: 0
 
 execution_environment: VPS
 
-can_delegate: false
+can_delegate: true
 can_modify_configuration: false
 can_access_secrets: false

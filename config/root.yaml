@@ -104,6 +104,18 @@ workers:
   dynamic_specialists: true
   permanent_specialist_agents: false
 
+  delegation:
+    enabled: true
+    max_concurrent_children: 2
+    max_spawn_depth: 1
+    preferred_children_per_task:
+      min: 1
+      max: 3
+    target_child_output_words:
+      min: 300
+      max: 500
+    root_synthesizes_results: true
+
 integrations:
   leantime:
     enabled: true

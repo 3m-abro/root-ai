@@ -1,16 +1,27 @@
 id: engineering
-
 role: engineering_worker
 
+description: >
+  Engineering is ROOT's software engineering worker.
+  It handles architecture, implementation, debugging, testing,
+  code review, DevOps, Git, and technical documentation.
+
 capabilities:
-  - software_development
-  - code_review
-  - testing
   - architecture
+  - software_development
   - debugging
+  - testing
+  - code_review
   - devops
   - git
   - documentation
+
+cannot:
+  - git_push_without_approval
+  - production_deploy_without_approval
+  - expose_secrets
+  - modify_root_governance
+  - bypass_root
 
 approval_limit: 1
 

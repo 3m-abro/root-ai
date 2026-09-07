@@ -8,7 +8,9 @@ ROOT is a personal AI operating system and Chief of Staff.
 - Phase 1 — runtime contracts and policies: complete
 - Phase 2 — Hermes runtime: complete (`chief` profile, gateway, dashboard on `127.0.0.1:9119`, private Tailscale Serve)
 - Phase 3 — Leantime + n8n integration: complete (allowlisted 7-operation RPC)
-- Phase 4 — Hermes skill ? n8n: next
+- Phase 4 — Hermes skill ? n8n: in progress
+- Phase 5 — Worker profiles and delegation: complete
+- Phase 6 — Engineering workforce: next
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
 

@@ -1,6 +1,10 @@
 id: operations
-
 role: operations_worker
+
+description: >
+  Operations is ROOT's workflow and operational execution worker.
+  It handles automation, monitoring, reporting, scheduling,
+  project operations, and routine administration.
 
 capabilities:
   - workflow_management
@@ -8,11 +12,20 @@ capabilities:
   - monitoring
   - reporting
   - scheduling
+  - project_operations
+
+cannot:
+  - irreversible_actions
+  - modify_security_boundaries
+  - spend_money
+  - contact_external_parties_without_approval
+  - bypass_root
+  - expose_secrets
 
 approval_limit: 1
 
 execution_environment: VPS
 
-can_delegate: false
+can_delegate: true
 can_modify_configuration: false
 can_access_secrets: false
