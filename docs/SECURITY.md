@@ -59,3 +59,12 @@ Never commit:
 ## Production
 
 Production changes require explicit approval unless a specific automation has been deliberately authorized.
+
+## Engineering MCP boundary
+
+GitHub MCP remains read-only with a narrow read-tool allowlist. External GitHub
+writes require approval and a separately approved write-capable path. Never
+work around read-only MCP restrictions with another tool absent authorization.
+Playwright demo validation does not authorize production browser actions.
+Curated third-party skills remain inactive until source, revision, license,
+dependencies, permissions, and trust review are recorded and approved.

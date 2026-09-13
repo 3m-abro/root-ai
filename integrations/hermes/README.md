@@ -40,3 +40,28 @@ skills:
 ```
 
 The skill CLI posts `{ operation, params }` to `/webhook/root/leantime/rpc` with header `x-root-api-key` from `ROOT_N8N_API_KEY`. Hermes still must not receive Leantime API keys or an arbitrary RPC escape hatch.
+
+## Engineering MCP phase
+
+Engineering now uses this model section in its live profile, as recorded in the
+[Phase 6 report](../../docs/PHASE-6.md):
+
+```yaml
+model:
+  provider: custom:freellmapi
+  default: auto:tools
+```
+
+This is a partial configuration; preserve the runtime's provider endpoint,
+secret handling, and other settings. Session-only model switches do not persist;
+verify the restarted profile banner after an authorized configuration change.
+
+Engineering uses native Context7, GitHub read-only, and Playwright MCPs. Keep
+GitHub read-only mode plus a narrow read-tool allowlist and least-privilege token.
+Do not copy credentials into Git or assume arbitrary YAML environment interpolation.
+Use [Engineering SOUL](../../prompts/engineering/SOUL.md) as the Git-owned role source;
+live synchronization is a separate deployment step.
+
+The [curated skills directory](../../skills/curated/README.md) contains metadata
+only, no loadable SKILL.md files. Do not add unreviewed upstream checkouts to
+`skills.external_dirs` or Hermes's auto-loaded skill directories.

@@ -4,15 +4,15 @@ ROOT is a personal AI operating system and Chief of Staff.
 
 ## Current Status
 
-- Phase 0 — repository foundation: complete
-- Phase 1 — runtime contracts and policies: complete
-- Phase 2 — Hermes runtime: complete (`chief` profile, gateway, dashboard on `127.0.0.1:9119`, private Tailscale Serve)
-- Phase 3 — Leantime + n8n integration: complete (allowlisted 7-operation RPC)
-- Phase 4 — Hermes skill ? n8n: complete
-- Phase 5 — Worker profiles and delegation: complete
-- Phase 6 — Engineering workforce: next
+- Phase 0 â€” repository foundation: complete
+- Phase 1 â€” runtime contracts and policies: complete
+- Phase 2 â€” Hermes runtime: complete (`chief` profile, gateway, dashboard on `127.0.0.1:9119`, private Tailscale Serve)
+- Phase 3 â€” Leantime + n8n integration: complete (allowlisted 7-operation RPC)
+- Phase 4 â€” Hermes skill ? n8n: complete
+- Phase 5 â€” Worker profiles and delegation: complete
+- Phase 6 â€” Engineering workforce: in progress; MCP phase complete, curated skills review next
 
-See [docs/ROADMAP.md](docs/ROADMAP.md).
+See [docs/ROADMAP.md](docs/ROADMAP.md), [current MCP status](docs/PHASE-6.md), and [curated skills plan](skills/curated/README.md).
 
 ## Core Responsibilities
 
@@ -26,14 +26,14 @@ See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Architecture
 
-- Hermes — agent runtime (`chief` profile)
-- Leantime — project/business source of truth
-- n8n — deterministic automation and Leantime RPC gateway
-- Cursor Agentic Team — organizational/role model
-- Cursor AI Dev Agents — engineering workforce
-- Claude Code — coding execution
-- Local ROOT Agent — local machine execution
-- Git — source of truth for ROOT configuration
+- Hermes â€” agent runtime (`chief` profile)
+- Leantime â€” project/business source of truth
+- n8n â€” deterministic automation and Leantime RPC gateway
+- Cursor Agentic Team â€” organizational/role model
+- Cursor AI Dev Agents â€” engineering workforce
+- Engineering Head â€” executor-agnostic coordination through approved skills, MCPs, and task-selected coding executors
+- Local ROOT Agent â€” local machine execution
+- Git â€” source of truth for ROOT configuration
 
 Live project access path:
 

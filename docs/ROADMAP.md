@@ -24,7 +24,7 @@ Phase 10  Autonomous operating loop
 | 3 n8n + Leantime integration | complete |
 | 4 Hermes skill → n8n | complete |
 | 5 Worker profiles and delegation | complete |
-| 6 Engineering workforce | next |
+| 6 Engineering workforce | in progress: MCP complete; curated skills review next |
 | 7–10 | not started |
 
 Phase 4 wired the live `chief` profile to the existing n8n Leantime RPC contract. Do not bypass that contract.
@@ -61,14 +61,13 @@ Do not create dozens of permanent Hermes profiles.
 
 ## Phase 6 — Engineering Workforce
 
-Status: Next
+Status: In progress. See [Phase 6](PHASE-6.md).
 
-Goals:
+1. Native Hermes MCPs: Context7, GitHub read-only, Playwright — complete per runtime report.
+2. Curated skills: manifest and review plan prepared; sources and trust review pending.
+3. Define temporary Architect, Implementer, Reviewer, QA, Security, DevOps roles.
+4. Integrate an approved task-selected executor, potentially DeepSeek Harness.
+5. Validate isolated Git, testing, review, approval, and local PC boundaries.
 
-- connect engineering profile to Claude Code
-- integrate cursor-ai-dev-agents
-- define Git workflow
-- define testing workflow
-- define code review workflow
-- define approval gates
-- prepare controlled local PC execution
+Engineering Head is executor-agnostic. Claude Code, Codex, OpenCode, and Hermes
+specialists are possible approved runtimes, not installed or preferred by this plan.

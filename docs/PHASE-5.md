@@ -216,8 +216,8 @@ Phase 6 — Engineering Workforce
 Planned integrations:
 
 - engineering profile
-- Claude Code
-- cursor-ai-dev-agents
+- approved task-selected coding executor (see Phase 6)
+- curated skills and temporary specialists
 - Git
 - testing
 - code review

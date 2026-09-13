@@ -138,6 +138,8 @@ integrations:
 
   github:
     enabled: true
+    access: mcp_read_only
+    writes_require_separate_approved_path: true
 
   pc_agent:
     enabled: false

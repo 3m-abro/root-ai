@@ -1,8 +1,8 @@
 id: engineering
-role: engineering_worker
+role: engineering_head
 
 description: >
-  Engineering is ROOT's software engineering worker.
+  Engineering Head is ROOT's executor-agnostic software engineering coordinator.
   It handles architecture, implementation, debugging, testing,
   code review, DevOps, Git, and technical documentation.
 
@@ -30,3 +30,10 @@ execution_environment: LOCAL_PC
 can_delegate: true
 can_modify_configuration: false
 can_access_secrets: false
+
+# ROOT metadata, not a complete deployable Hermes configuration.
+model:
+  provider: custom:freellmapi
+  default: auto:tools
+soul: prompts/engineering/SOUL.md
+coding_executor: task_selected_approved_runtime

@@ -32,7 +32,8 @@ Leantime  (projects / tasks source of truth)
 Also:
 
   +-- Git (configuration source of truth)
-  +-- Claude Code / Local ROOT Agent (not yet wired)
+  +-- Engineering Head → approved skills + native Hermes MCPs → task-selected executor
+  +-- DeepSeek Harness / other coding runtimes / Local ROOT Agent (not yet wired)
 
 ## Runtime Path (Phase 3)
 
@@ -97,3 +98,15 @@ Git
 - Deployment configuration
 
 Runtime state and secrets must remain outside Git.
+
+## Engineering routing and capabilities
+
+FreeLLMAPI supplies logical routing independently of the coding executor. Engineering
+uses `custom:freellmapi` with `auto:tools` for coordination and MCP operations;
+`auto:coding` remains the route for coding-focused work. Neither alias grants tools
+or approvals. No executor is always available or preferred.
+
+Context7, GitHub read-only, and Playwright are the completed Engineering MCP phase
+(see [evidence and next steps](PHASE-6.md)). Temporary Architect, Implementer,
+Reviewer, QA, Security, and DevOps roles follow curated-skills review. They remain
+bounded children, not new durable profiles, and cannot exceed ROOT's permissions.
