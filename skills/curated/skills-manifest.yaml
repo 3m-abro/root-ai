@@ -1,0 +1,383 @@
+schema_version: 2
+purpose: Reviewed static inventory; not a Hermes configuration or installer
+automatic_installation: false
+runtime_activation: false
+skills:
+- name: writing-plans
+  department: engineering
+  assigned_to:
+  - engineering
+  - Architect
+  source:
+    repository: https://github.com/obra/superpowers
+    revision: b36e0829c6d0140e93cfef2ca599b1b07d4a7797
+    url: https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/writing-plans/SKILL.md
+    license: MIT
+    license_evidence: upstream LICENSE
+  review:
+    status: approved_static_adaptation
+    reviewer: Codex source review under user-authorized curation
+    date: '2026-09-13'
+    record: skills/curated/REVIEW.md#writing-plans
+  content_type: instruction-only
+  upstream_bundle_has_executable_files: false
+  tool_execution_risk: low
+  vendored: true
+  enabled: false
+  runtime_validation: not_run
+  notes: Planning and local document writes. Upstream handoff references the deferred subagent skill;
+    ROOT replaces that handoff with bounded inline execution. No dependency auto-install.
+  files:
+  - source_path: skills/writing-plans/SKILL.md
+    source_sha256: 48508f44bbfd7d24b029fbf3a314f3cd14c9615599059366e922f47b8dc08cf2
+    vendor_path: skills/third-party/superpowers/writing-plans/SKILL.md
+    vendor_sha256: ddf11dcd4c9a41ed66c5310c95f8440fb075b4478c4ccc18e60bdc94e308359d
+- name: executing-plans
+  department: engineering
+  assigned_to:
+  - engineering
+  - Implementer
+  source:
+    repository: https://github.com/obra/superpowers
+    revision: b36e0829c6d0140e93cfef2ca599b1b07d4a7797
+    url: https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/executing-plans/SKILL.md
+    license: MIT
+    license_evidence: upstream LICENSE
+  review:
+    status: approved_static_adaptation
+    reviewer: Codex source review under user-authorized curation
+    date: '2026-09-13'
+    record: skills/curated/REVIEW.md#executing-plans
+  content_type: instruction-only
+  upstream_bundle_has_executable_files: false
+  tool_execution_risk: medium
+  vendored: true
+  enabled: false
+  runtime_validation: not_run
+  notes: Local edits, tests and commits can execute project code. Replaced automatic subagent selection
+    and unvendored finishing-a-development-branch dependency with ROOT review and approval gates.
+  files:
+  - source_path: skills/executing-plans/SKILL.md
+    source_sha256: c4c3d8b628c51114cd165fb8246fe02744cd8be180032328391252e653028d9b
+    vendor_path: skills/third-party/superpowers/executing-plans/SKILL.md
+    vendor_sha256: a35ee48ac33d3eb82eadc43bd6d69c214218b1f4d632f60c140859cbeb76092d
+- name: systematic-debugging
+  department: engineering
+  assigned_to:
+  - engineering
+  - Implementer
+  - QA
+  - Security
+  - DevOps
+  source:
+    repository: https://github.com/obra/superpowers
+    revision: b36e0829c6d0140e93cfef2ca599b1b07d4a7797
+    url: https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/systematic-debugging/SKILL.md
+    license: MIT
+    license_evidence: upstream LICENSE
+  review:
+    status: approved_static_adaptation
+    reviewer: Codex source review under user-authorized curation
+    date: '2026-09-13'
+    record: skills/curated/REVIEW.md#systematic-debugging
+  content_type: instruction-only
+  upstream_bundle_has_executable_files: true
+  tool_execution_risk: high
+  vendored: true
+  enabled: false
+  runtime_validation: not_run
+  notes: Upstream diagnostic example prints environment values and queries keychain identities. Removed
+    that example; only redacted presence checks are allowed. Excluded find-polluter.sh and the TypeScript
+    helper. Supporting tracing text no longer calls them.
+  files:
+  - source_path: skills/systematic-debugging/SKILL.md
+    source_sha256: 808fc5717aa88ad65efff312b11c186294d3e6ee301afb584e2f86599b137787
+    vendor_path: skills/third-party/superpowers/systematic-debugging/SKILL.md
+    vendor_sha256: 13a848b89564d7d428bc00f8858d07abcf0d5b0289855ca6d8927fe5cb060049
+  - source_path: skills/systematic-debugging/root-cause-tracing.md
+    source_sha256: 6b0622269e098ca1399e123e553fd385f0b6412d88ef0e9c4f5a8ea9cf1cec7b
+    vendor_path: skills/third-party/superpowers/systematic-debugging/root-cause-tracing.md
+    vendor_sha256: 0f64b6ed96e611d403cae2b91a39bbec8e1471e35ebbee7d77fa85969c2f63a5
+  - source_path: skills/systematic-debugging/defense-in-depth.md
+    source_sha256: 1e175fb86fc357e58c6aebf5441e481e1b7868b4380c0456b63a17eefbd18ba7
+    vendor_path: skills/third-party/superpowers/systematic-debugging/defense-in-depth.md
+    vendor_sha256: 1e175fb86fc357e58c6aebf5441e481e1b7868b4380c0456b63a17eefbd18ba7
+  - source_path: skills/systematic-debugging/condition-based-waiting.md
+    source_sha256: e89fec8400d6cd50f43407cec9fab50976ba4d55d0ec2eb51c0bd68036b54c26
+    vendor_path: skills/third-party/superpowers/systematic-debugging/condition-based-waiting.md
+    vendor_sha256: d6949a47f50f09f173a002558383814e69eb56f733f21b18b6f24eb161a004e1
+- name: test-driven-development
+  department: engineering
+  assigned_to:
+  - Implementer
+  - QA
+  source:
+    repository: https://github.com/obra/superpowers
+    revision: b36e0829c6d0140e93cfef2ca599b1b07d4a7797
+    url: https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/test-driven-development/SKILL.md
+    license: MIT
+    license_evidence: upstream LICENSE
+  review:
+    status: approved_static_adaptation
+    reviewer: Codex source review under user-authorized curation
+    date: '2026-09-13'
+    record: skills/curated/REVIEW.md#test-driven-development
+  content_type: instruction-only
+  upstream_bundle_has_executable_files: false
+  tool_execution_risk: medium
+  vendored: true
+  enabled: false
+  runtime_validation: not_run
+  notes: Test commands execute project code. Upstream unconditional delete-and-rewrite instructions are
+    replaced with preservation of existing work and a reversible, task-scoped red-green cycle.
+  files:
+  - source_path: skills/test-driven-development/SKILL.md
+    source_sha256: bf1b8216e523851a411e91d429a7c1c2a173e79d88957bc78e348218d50edd54
+    vendor_path: skills/third-party/superpowers/test-driven-development/SKILL.md
+    vendor_sha256: 49d5950bb36021257589bfca9b6c65ef32827b6f0ed5021f9d1533dc7f02158c
+  - source_path: skills/test-driven-development/writing-good-tests.md
+    source_sha256: 51471c853306ff92ca8bb41dcaea05f31c0e46b03651f8f3c99754b7172f4ae1
+    vendor_path: skills/third-party/superpowers/test-driven-development/writing-good-tests.md
+    vendor_sha256: 51471c853306ff92ca8bb41dcaea05f31c0e46b03651f8f3c99754b7172f4ae1
+- name: requesting-code-review
+  department: engineering
+  assigned_to:
+  - engineering
+  - Reviewer
+  - Security
+  source:
+    repository: https://github.com/obra/superpowers
+    revision: b36e0829c6d0140e93cfef2ca599b1b07d4a7797
+    url: https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/requesting-code-review/SKILL.md
+    license: MIT
+    license_evidence: upstream LICENSE
+  review:
+    status: approved_static_adaptation
+    reviewer: Codex source review under user-authorized curation
+    date: '2026-09-13'
+    record: skills/curated/REVIEW.md#requesting-code-review
+  content_type: instruction-only
+  upstream_bundle_has_executable_files: false
+  tool_execution_risk: medium
+  vendored: true
+  enabled: false
+  runtime_validation: not_run
+  notes: Read-only review prompt included. ROOT supplies the actual task base commit, never assumes HEAD~1
+    covers all changes. Only the authorized controller dispatches reviewers; a depth-limited child returns
+    the request to ROOT.
+  files:
+  - source_path: skills/requesting-code-review/SKILL.md
+    source_sha256: d71cc01ba56d2325cf8af5f7c11837819b63ecd57de0bfdb812f7f3ff7751df8
+    vendor_path: skills/third-party/superpowers/requesting-code-review/SKILL.md
+    vendor_sha256: f81e992d60a2d38dfb5471840fdb277f0c9e7712025860eb8c91e75d9ef69432
+  - source_path: skills/requesting-code-review/code-reviewer.md
+    source_sha256: 5eca5fcfd48a50e0a526ce5ffd64bf625d6b81bb46d11795274dae451fe6ffd4
+    vendor_path: skills/third-party/superpowers/requesting-code-review/code-reviewer.md
+    vendor_sha256: 33354498fba3ed222f22423f4df58a7ed09bfcaf8d4666460ffbe9b25c6ce82b
+- name: verification-before-completion
+  department: engineering
+  assigned_to:
+  - engineering
+  - Architect
+  - Implementer
+  - Reviewer
+  - QA
+  - Security
+  - DevOps
+  source:
+    repository: https://github.com/obra/superpowers
+    revision: b36e0829c6d0140e93cfef2ca599b1b07d4a7797
+    url: https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/verification-before-completion/SKILL.md
+    license: MIT
+    license_evidence: upstream LICENSE
+  review:
+    status: approved_static_adaptation
+    reviewer: Codex source review under user-authorized curation
+    date: '2026-09-13'
+    record: skills/curated/REVIEW.md#verification-before-completion
+  content_type: instruction-only
+  upstream_bundle_has_executable_files: false
+  tool_execution_risk: low
+  vendored: true
+  enabled: false
+  runtime_validation: not_run
+  notes: Requires fresh evidence and honest failure reporting. Verification commands still need task-specific
+    scope; this skill grants no execution or external-write authority.
+  files:
+  - source_path: skills/verification-before-completion/SKILL.md
+    source_sha256: 2befe7fc55bcadaa3d97dd9e8efeb633d2561c0ebe74c5a8b17c4d9e7e4520b3
+    vendor_path: skills/third-party/superpowers/verification-before-completion/SKILL.md
+    vendor_sha256: 29b1d691cb2dd84daa3fea70ea46479d66b4e920d09b04b770b9660dc4d49ce4
+- name: using-git-worktrees
+  department: engineering
+  assigned_to:
+  - engineering
+  - Implementer
+  - DevOps
+  source:
+    repository: https://github.com/obra/superpowers
+    revision: b36e0829c6d0140e93cfef2ca599b1b07d4a7797
+    url: https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/using-git-worktrees/SKILL.md
+    license: MIT
+    license_evidence: upstream LICENSE
+  review:
+    status: approved_static_adaptation
+    reviewer: Codex source review under user-authorized curation
+    date: '2026-09-13'
+    record: skills/curated/REVIEW.md#using-git-worktrees
+  content_type: instruction-only
+  upstream_bundle_has_executable_files: false
+  tool_execution_risk: medium
+  vendored: true
+  enabled: false
+  runtime_validation: not_run
+  notes: Worktree creation and dependency setup have filesystem and code-execution effects. Removed automatic
+    package installation and implicit .gitignore commit. Inspect project manifests and approve concrete
+    setup commands first.
+  files:
+  - source_path: skills/using-git-worktrees/SKILL.md
+    source_sha256: 8cfb86f121269e8f7f12361e6795c4f6738828340e28964c9229d365666c9edd
+    vendor_path: skills/third-party/superpowers/using-git-worktrees/SKILL.md
+    vendor_sha256: b92e51a240c410b447dda89ee97eb7c876d9d0b91ece052d0902788182d1fa38
+- name: subagent-driven-development
+  department: engineering
+  assigned_to:
+  - engineering
+  source:
+    repository: https://github.com/obra/superpowers
+    revision: b36e0829c6d0140e93cfef2ca599b1b07d4a7797
+    url: https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/subagent-driven-development/SKILL.md
+    license: MIT
+    license_evidence: upstream LICENSE
+  review:
+    status: deferred
+    reviewer: Codex source review under user-authorized curation
+    date: '2026-09-13'
+    record: skills/curated/REVIEW.md#subagent-driven-development
+  content_type: executable-dependent
+  upstream_bundle_has_executable_files: true
+  tool_execution_risk: high
+  vendored: false
+  enabled: false
+  runtime_validation: not_run
+  notes: 'Deferred: current SKILL.md requires scripts/sdd-workspace, task-brief and review-package, plus
+    additional prompts and finishing-a-development-branch. It also directs workspace deletion and extensive
+    automatic delegation. Entry file reviewed; script dependency closure is not approved. Needs a separate
+    static adaptation and depth-safe runtime pilot.'
+  files:
+  - source_path: skills/subagent-driven-development/SKILL.md
+    source_sha256: 8dd1b8e698edec3700c6d89517dbe96febd3bacd3f6ea21c1a3569c62ea104b5
+- name: research-workflow
+  department: research
+  assigned_to:
+  - research
+  source:
+    repository: https://github.com/jwynia/agent-skills
+    revision: e02ec7e226a6e4f8419fd3b88a1d8e472d421b32
+    url: https://github.com/jwynia/agent-skills/blob/e02ec7e226a6e4f8419fd3b88a1d8e472d421b32/skills/general/research/methodology/research-workflow/SKILL.md
+    license: MIT
+    license_evidence: SKILL.md frontmatter; author metadata preserved
+  review:
+    status: approved_static_adaptation
+    reviewer: Codex source review under user-authorized curation
+    date: '2026-09-13'
+    record: skills/curated/REVIEW.md#research-workflow
+  content_type: instruction-only
+  upstream_bundle_has_executable_files: false
+  tool_execution_risk: medium
+  vendored: true
+  enabled: false
+  runtime_validation: not_run
+  notes: 'Static methodology, three templates and two references reviewed. web-search CLI examples are
+    illustrative: use an existing approved read-only search tool, never install a similarly named CLI.
+    Example dates, claims and citations are illustrative, not verified evidence. MIT declared in skill
+    frontmatter; no repository-wide license file found.'
+  files:
+  - source_path: skills/general/research/methodology/research-workflow/SKILL.md
+    source_sha256: d9ad1518ee40f02b9ec11cd845f8dff4f41ef717b9749fa0507700e3d2d1271f
+    vendor_path: skills/third-party/agent-skills/research-workflow/SKILL.md
+    vendor_sha256: 3624752bb68e68f3cc6552cad406199c9be618d2b9db66db6a5d1ebbc79dee37
+  - source_path: skills/general/research/methodology/research-workflow/assets/research-plan-template.md
+    source_sha256: 5929f03f1e20dbf9c95e29403348d7c0ceba3a0de2dd1df1993acbe4a822c646
+    vendor_path: skills/third-party/agent-skills/research-workflow/assets/research-plan-template.md
+    vendor_sha256: 5929f03f1e20dbf9c95e29403348d7c0ceba3a0de2dd1df1993acbe4a822c646
+  - source_path: skills/general/research/methodology/research-workflow/assets/research-report-template.md
+    source_sha256: 7d49783ce11c2ee640124c00a6f399088e14789ab32afce9b377643aef2d5845
+    vendor_path: skills/third-party/agent-skills/research-workflow/assets/research-report-template.md
+    vendor_sha256: 7d49783ce11c2ee640124c00a6f399088e14789ab32afce9b377643aef2d5845
+  - source_path: skills/general/research/methodology/research-workflow/assets/source-evaluation-checklist.md
+    source_sha256: 5a03abf182e2cceaf7c1040dd9cb038f6fdda988a894be84e8670971ee3dc2a0
+    vendor_path: skills/third-party/agent-skills/research-workflow/assets/source-evaluation-checklist.md
+    vendor_sha256: 5a03abf182e2cceaf7c1040dd9cb038f6fdda988a894be84e8670971ee3dc2a0
+  - source_path: skills/general/research/methodology/research-workflow/references/methodology.md
+    source_sha256: bd031fecf400de10465d9b5f0a8f9944f8b1c9404dff023bb3abc7d7f8a88580
+    vendor_path: skills/third-party/agent-skills/research-workflow/references/methodology.md
+    vendor_sha256: bd031fecf400de10465d9b5f0a8f9944f8b1c9404dff023bb3abc7d7f8a88580
+  - source_path: skills/general/research/methodology/research-workflow/references/output-formats.md
+    source_sha256: a38b0d25f1032996c6832d407632b2063fde8b4952da98857e84c5176a23d19c
+    vendor_path: skills/third-party/agent-skills/research-workflow/references/output-formats.md
+    vendor_sha256: a38b0d25f1032996c6832d407632b2063fde8b4952da98857e84c5176a23d19c
+- name: humanize
+  department: writing
+  assigned_to:
+  - marketing
+  source:
+    repository: https://github.com/harshaneel/humanize
+    revision: 4ec797314537ec9c2105f276d4561d240a0390ba
+    url: https://github.com/harshaneel/humanize/blob/4ec797314537ec9c2105f276d4561d240a0390ba/humanize/SKILL.md
+    license: MIT
+    license_evidence: upstream LICENSE
+  review:
+    status: deferred
+    reviewer: Codex source review under user-authorized curation
+    date: '2026-09-13'
+    record: skills/curated/REVIEW.md#humanize
+  content_type: instruction-only
+  upstream_bundle_has_executable_files: false
+  tool_execution_risk: high
+  vendored: false
+  enabled: false
+  runtime_validation: not_run
+  notes: 'Deferred: optional detector/model scoring may disclose drafts to GPTZero, Pangram or another
+    model; detection-avoidance emphasis and plausible-specificity first-person frames need a truth-preserving,
+    local-only adaptation. No external scoring or writing-sample upload approved. Research bibliography
+    claims not independently verified.'
+  files:
+  - source_path: humanize/SKILL.md
+    source_sha256: bfb3c5fb90c837f44b5732b33f13e9e1dd61885cc77d0cfe99ce8a3e6ef541aa
+- name: ai-check
+  department: writing
+  assigned_to:
+  - marketing
+  source:
+    repository: https://github.com/harshaneel/humanize
+    revision: 4ec797314537ec9c2105f276d4561d240a0390ba
+    url: https://github.com/harshaneel/humanize/blob/4ec797314537ec9c2105f276d4561d240a0390ba/ai-check/SKILL.md
+    license: MIT
+    license_evidence: upstream LICENSE
+  review:
+    status: deferred
+    reviewer: Codex source review under user-authorized curation
+    date: '2026-09-13'
+    record: skills/curated/REVIEW.md#ai-check
+  content_type: instruction-only
+  upstream_bundle_has_executable_files: false
+  tool_execution_risk: high
+  vendored: false
+  enabled: false
+  runtime_validation: not_run
+  notes: 'Deferred: fixed 0-27 style thresholds produce Human/AI verdicts and AI-edited fractions without
+    local calibration. Advisory style feedback could be adapted later; current authorship classification
+    is not approved. No detector accuracy claims verified.'
+  files:
+  - source_path: ai-check/SKILL.md
+    source_sha256: 675276638c8faa9567611ae2acec1fef1af6b7f29fbc33e572b0a3489d2d923d
+attribution_files:
+- path: skills/third-party/agent-skills/LICENSE
+  sha256: 508a77d2e7b51d98adeed32648ad124b7b30241a8e70b2e72c99f92d8e5874d1
+- path: skills/third-party/agent-skills/NOTICE.md
+  sha256: 6aba434847a933222eeb910ad5fb7f5cd3d299cc6d6f9ef40a79ca2401746fa3
+- path: skills/third-party/superpowers/LICENSE
+  sha256: a37e0e9697144819e1d965176ac4ae5bc3fa02d11e7812036bbcadf6dafe2400
+- path: skills/third-party/superpowers/NOTICE.md
+  sha256: 31d9e7e27b71e802b97502e20632ae1e9d84c93b9d375605185c1b9ab4d684f9

@@ -62,6 +62,7 @@ Do not copy credentials into Git or assume arbitrary YAML environment interpolat
 Use [Engineering SOUL](../../prompts/engineering/SOUL.md) as the Git-owned role source;
 live synchronization is a separate deployment step.
 
-The [curated skills directory](../../skills/curated/README.md) contains metadata
-only, no loadable SKILL.md files. Do not add unreviewed upstream checkouts to
-`skills.external_dirs` or Hermes's auto-loaded skill directories.
+The [curated skills directory](../../skills/curated/README.md) records eight approved static adaptations and three deferred candidates. The
+vendored archive is not activated. Do not add it wholesale or add upstream checkouts
+to `skills.external_dirs` or auto-loaded directories. Pilot only selected approved
+copies using the [specialist validation plan](../../docs/ENGINEERING-SPECIALISTS.md).

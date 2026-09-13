@@ -10,9 +10,9 @@ ROOT is a personal AI operating system and Chief of Staff.
 - Phase 3 — Leantime + n8n integration: complete (allowlisted 7-operation RPC)
 - Phase 4 — Hermes skill ? n8n: complete
 - Phase 5 — Worker profiles and delegation: complete
-- Phase 6 — Engineering workforce: in progress; MCP phase complete, curated skills review next
+- Phase 6 — Engineering workforce: in progress; MCP phase complete, eight static skills curated; specialist pilot next
 
-See [docs/ROADMAP.md](docs/ROADMAP.md), [current MCP status](docs/PHASE-6.md), and [curated skills plan](skills/curated/README.md).
+See [docs/ROADMAP.md](docs/ROADMAP.md), [current MCP status](docs/PHASE-6.md), and [curated skills governance](skills/curated/README.md).
 
 ## Core Responsibilities
 

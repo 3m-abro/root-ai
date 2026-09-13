@@ -108,5 +108,7 @@ or approvals. No executor is always available or preferred.
 
 Context7, GitHub read-only, and Playwright are the completed Engineering MCP phase
 (see [evidence and next steps](PHASE-6.md)). Temporary Architect, Implementer,
-Reviewer, QA, Security, and DevOps roles follow curated-skills review. They remain
-bounded children, not new durable profiles, and cannot exceed ROOT's permissions.
+Reviewer, QA, Security, and DevOps roles are mapped in
+[the specialist pilot](ENGINEERING-SPECIALISTS.md). They remain bounded children,
+not new durable profiles. ROOT dispatches them when Engineering is already a
+depth-one child; no nested delegation or permission increase is authorized.

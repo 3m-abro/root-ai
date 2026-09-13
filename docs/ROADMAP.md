@@ -24,7 +24,7 @@ Phase 10  Autonomous operating loop
 | 3 n8n + Leantime integration | complete |
 | 4 Hermes skill → n8n | complete |
 | 5 Worker profiles and delegation | complete |
-| 6 Engineering workforce | in progress: MCP complete; curated skills review next |
+| 6 Engineering workforce | in progress: MCP complete; eight static skills curated; specialist pilot next |
 | 7–10 | not started |
 
 Phase 4 wired the live `chief` profile to the existing n8n Leantime RPC contract. Do not bypass that contract.
@@ -64,8 +64,8 @@ Do not create dozens of permanent Hermes profiles.
 Status: In progress. See [Phase 6](PHASE-6.md).
 
 1. Native Hermes MCPs: Context7, GitHub read-only, Playwright — complete per runtime report.
-2. Curated skills: manifest and review plan prepared; sources and trust review pending.
-3. Define temporary Architect, Implementer, Reviewer, QA, Security, DevOps roles.
+2. Curated skills: all 11 candidates reviewed; eight static adaptations vendored, three deferred; runtime activation pending.
+3. Run the [temporary specialist pilot](ENGINEERING-SPECIALISTS.md); role mappings and depth-safe handoff are documented.
 4. Integrate an approved task-selected executor, potentially DeepSeek Harness.
 5. Validate isolated Git, testing, review, approval, and local PC boundaries.
 

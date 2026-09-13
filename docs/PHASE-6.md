@@ -1,4 +1,4 @@
-# Phase 6 — MCP complete; curated skills next
+# Phase 6 — curated static skills reviewed; specialist pilot next
 
 Status recorded: 2026-09-13. Source: the user's “ROOT Aufbauanleitung” conversation
 `01368779-0354-832f-bcbd-255f7bbf3a4e`. These are reported runtime results, not a fresh
@@ -41,14 +41,18 @@ on Research and GitHub read-only on Chief remain deployment verification items.
 The Git-owned [Engineering SOUL](../prompts/engineering/SOUL.md) must be reviewed
 and synchronized with the live profile separately; this update does not deploy it.
 
-## Next phase and exit criteria
+## Curated skills result and next phase
 
-Review the [curated manifest](../skills/curated/manifest.json) using its
-[review workflow](../skills/curated/README.md). No third-party skill is installed.
-Choose exact sources, pin revisions, inspect content and dependencies, assess
-licenses and permissions, record approval, then validate one skill at a time in
-an isolated profile. Only approved copies may enter a runtime skill directory.
+The [YAML manifest](../skills/curated/skills-manifest.yaml) records all 11 candidate
+reviews. Eight adapted static skills are vendored with source revisions, checksums,
+license evidence and role assignments. Subagent-driven-development, humanize and
+ai-check are deferred for the reasons in the [review record](../skills/curated/REVIEW.md).
+No third-party code was executed and no runtime skill was activated.
 
-After that, define temporary specialists and evaluate DeepSeek Harness or another
-approved executor. End-to-end executor integration, specialist tool isolation,
-and production use remain pending. Existing L2 push/deployment approval gates stand.
+Follow the [governance](../skills/curated/README.md) and
+[temporary specialist mapping and pilot](ENGINEERING-SPECIALISTS.md). ROOT's
+one-level spawn limit requires controller-mediated handoff when Engineering is
+already a child. Validate real tool isolation and refusal behavior before activation.
+
+DeepSeek Harness or another executor follows the pilot. Production use, deployment,
+and live Hermes validation remain pending; existing L2 approval gates stand.
