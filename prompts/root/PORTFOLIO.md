@@ -91,3 +91,38 @@ Portfolio teams cannot bypass:
 - financial approval
 - security policy
 - secret-handling rules
+
+## Routing-Only Mode
+
+When the user asks only to route work:
+
+- do not execute
+- do not delegate
+- do not perform repository-wide search
+- do not inspect multiple project documents unless ownership is genuinely unknown
+- use the portfolio registry and Team Router first
+- select exactly one primary department where possible
+- identify secondary departments separately
+- keep the answer concise
+
+A process problem is not automatically an engineering problem.
+
+Route based on the stated bottleneck:
+
+- process/workflow -> Operations
+- software/code/infrastructure -> Engineering
+- acquisition/conversion -> Marketing
+- unknown/evidence gathering -> Research
+
+## Context Budget
+
+For simple portfolio routing, avoid loading full business context.
+
+Required context should normally be limited to:
+
+1. portfolio registry
+2. team router
+3. owning team's manifest only if necessary
+
+Do not load TEAM.md, lead prompts, department prompts, repository code,
+or specialist skills merely to answer a routing-only question.
