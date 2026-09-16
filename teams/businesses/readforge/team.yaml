@@ -1,0 +1,42 @@
+id: readforge
+name: ReadForge
+type: business
+status: active
+
+mission: >
+  Build and grow the ReadForge publishing platform for authors,
+  publishers, and readers.
+
+lead:
+  type: contextual
+  role: Product Business Lead
+
+ownership:
+  - product strategy
+  - roadmap
+  - author acquisition
+  - publisher acquisition
+  - monetization
+  - user growth
+  - product KPIs
+
+shared_departments:
+  engineering: true
+  research: true
+  marketing: true
+  operations: true
+  finance: true
+  legal: true
+
+leantime:
+  project_id: null
+  project_name: ReadForge
+
+execution:
+  may_delegate: true
+  max_delegation_depth: 2
+
+approval:
+  git_push: required
+  production_deploy: required
+  financial_commitment: required

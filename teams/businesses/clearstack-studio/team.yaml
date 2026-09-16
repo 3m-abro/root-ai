@@ -1,0 +1,40 @@
+id: clearstack-studio
+name: ClearStack Studio
+type: business
+status: active
+
+mission: >
+  Build and operate ClearStack Studio as a software, automation,
+  and digital services business.
+
+lead:
+  type: contextual
+  role: Business Lead
+
+ownership:
+  - business strategy
+  - client delivery
+  - service roadmap
+  - revenue priorities
+  - business KPIs
+
+shared_departments:
+  engineering: true
+  research: true
+  marketing: true
+  operations: true
+  finance: true
+  legal: true
+
+leantime:
+  project_id: 3
+  project_name: ClearStack Studio
+
+execution:
+  may_delegate: true
+  max_delegation_depth: 2
+
+approval:
+  git_push: required
+  production_deploy: required
+  financial_commitment: required

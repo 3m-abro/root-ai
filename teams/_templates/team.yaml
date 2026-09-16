@@ -1,0 +1,40 @@
+id: example-team
+name: Example Team
+type: business
+
+status: active
+
+mission: >
+  Describe why this team exists.
+
+lead:
+  type: contextual
+  role: Business Lead
+
+ownership:
+  - goals
+  - roadmap
+  - priorities
+  - KPIs
+  - business context
+
+shared_departments:
+  engineering: true
+  research: true
+  marketing: true
+  operations: true
+  finance: false
+  legal: false
+
+leantime:
+  project_id: null
+  project_name: null
+
+execution:
+  may_delegate: true
+  max_delegation_depth: 2
+
+approval:
+  git_push: required
+  production_deploy: required
+  financial_commitment: required

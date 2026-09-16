@@ -1,0 +1,41 @@
+id: root-platform
+name: ROOT Platform
+type: project
+status: active
+
+mission: >
+  Build and maintain the ROOT multi-agent operating system.
+
+lead:
+  type: contextual
+  role: Platform Lead
+
+ownership:
+  - ROOT architecture
+  - orchestration
+  - agent governance
+  - integrations
+  - reliability
+  - security
+  - platform roadmap
+
+shared_departments:
+  engineering: true
+  research: true
+  marketing: false
+  operations: true
+  finance: false
+  legal: false
+
+leantime:
+  project_id: null
+  project_name: ROOT Platform
+
+execution:
+  may_delegate: true
+  max_delegation_depth: 2
+
+approval:
+  git_push: required
+  production_deploy: required
+  financial_commitment: required

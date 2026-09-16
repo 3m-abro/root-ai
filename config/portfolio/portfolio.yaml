@@ -1,0 +1,34 @@
+version: 1
+
+portfolio:
+
+  businesses:
+    - id: clearstack-studio
+      path: teams/businesses/clearstack-studio
+      status: active
+      priority: normal
+
+    - id: readforge
+      path: teams/businesses/readforge
+      status: active
+      priority: normal
+
+  projects:
+    - id: root-platform
+      path: teams/projects/root-platform
+      status: active
+      priority: high
+
+shared_departments:
+  - engineering
+  - research
+  - marketing
+  - operations
+  - finance
+  - legal
+
+routing_policy:
+  business_context_first: true
+  use_shared_departments: true
+  avoid_duplicate_specialists: true
+  preserve_approval_boundaries: true
