@@ -41,3 +41,12 @@ not installed capabilities. Temporary Architect, Implementer, Reviewer, QA,
 Security, and DevOps roles come after review. Respect ROOT's existing delegation
 depth and concurrency limits. Verify actual child tool exposure before delegation;
 role prompts cannot restrict an inherited tool by themselves.
+
+## Context Fidelity
+
+When Headroom returns a CCR reference:
+
+- do not infer code, config, commands, security rules, or exact file content
+- retrieve the CCR when exact content is required for implementation or review
+- retrieve only what is necessary
+- do not manually compress normal context

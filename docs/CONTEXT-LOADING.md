@@ -4,29 +4,78 @@
 
 Load the minimum context required for the current task.
 
-## Prefer
+Prefer retrieval over persistent context.
+
+## Normal Context Order
 
 1. current request
 2. owning portfolio manifest
 3. relevant department instructions
 4. task-specific skill
+5. exact source material only when needed
 
 ## Do Not Automatically Load
 
-- historical phase documents
+- historical PHASE documents
 - unrelated TEAM.md files
 - unrelated department SOULs
 - all skills
 - full repository documentation
+- unrelated business/project context
 
-## Headroom
+## Headroom Proxy
 
-Automatic proxy compression is enabled.
+Headroom proxy compression is enabled automatically.
 
-Compressed context may be retrieved when exact detail is required.
+The model should not manually call `headroom_compress` during normal work.
 
-Do not manually invoke Headroom for small or already-concise context.
+## CCR References
 
-## Goal
+If a tool result returns a CCR reference such as:
 
-Prefer retrieval over persistent context.
+`<<ccr:...>>`
+
+then:
+
+- do not guess the missing content
+- do not infer exact facts from the placeholder
+- call `headroom_retrieve` only when exact source content is required
+- retrieve only the specific reference needed
+- avoid retrieving all compressed context proactively
+
+## Headroom MCP Policy
+
+Allowed:
+
+- `headroom_retrieve` when exact compressed source content is required
+- `headroom_stats` for diagnostics and benchmarks
+
+Avoid:
+
+- `headroom_compress` during normal requests
+- unnecessary retrieval of compressed content
+- retrieving CCR content when a summary is already sufficient
+
+## Routing-Only Tasks
+
+Normally require only:
+
+- portfolio registry
+- team-router
+
+Do not load implementation documents.
+
+## Engineering Tasks
+
+Normally load:
+
+- owning team context
+- Engineering SOUL
+- relevant code/document fragments
+- selected skills only
+
+Do not load unrelated portfolio or department context.
+
+## Historical Documents
+
+`docs/HISTORICAL/` content is loaded only when historical state is explicitly required.

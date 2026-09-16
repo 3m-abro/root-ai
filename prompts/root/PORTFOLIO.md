@@ -152,3 +152,15 @@ Do not use Headroom for:
 Prefer:
 
 compress -> reason over compact representation -> retrieve exact details only when needed.
+
+## Compressed Context
+
+Headroom proxy may replace large context with CCR references.
+
+When this happens:
+
+- never infer exact content from a CCR placeholder
+- retrieve the CCR only if exact detail is required
+- use `headroom_retrieve` selectively
+- do not manually call `headroom_compress`
+- do not call `headroom_stats` except for diagnostics or benchmarks
