@@ -2,47 +2,30 @@
 
 ## Principle
 
-Load the minimum context required to complete the current task.
+Load the minimum context required for the current task.
 
-## Always Prefer
+## Prefer
 
-1. task/request
+1. current request
 2. owning portfolio manifest
 3. relevant department instructions
 4. task-specific skill
 
-Load additional material only when required.
-
 ## Do Not Automatically Load
 
-- ROADMAP files
-- PHASE history
+- historical phase documents
 - unrelated TEAM.md files
 - unrelated department SOULs
 - all skills
 - full repository documentation
 
-## Routing-Only Tasks
+## Headroom
 
-Normally require only:
+Automatic proxy compression is enabled.
 
-- portfolio registry
-- team-router
+Compressed context may be retrieved when exact detail is required.
 
-## Engineering Tasks
-
-Load:
-
-- owning team context
-- Engineering SOUL
-- relevant code/doc fragments
-- selected skills
-
-Do not load unrelated portfolio teams.
-
-## Historical Documents
-
-PHASE-* and retrospective documents are loaded only when historical status is explicitly needed.
+Do not manually invoke Headroom for small or already-concise context.
 
 ## Goal
 

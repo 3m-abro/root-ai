@@ -115,8 +115,8 @@ depth-one child; no nested delegation or permission increase is authorized.
 
 ## Organizational Model
 
-Portfolio ownership and shared-department responsibilities are defined in:
+Portfolio ownership, shared departments, and business/project team responsibilities are defined in:
 
 prompts/root/PORTFOLIO.md
 
-This document describes runtime architecture only.
+This document defines runtime and technical architecture only.

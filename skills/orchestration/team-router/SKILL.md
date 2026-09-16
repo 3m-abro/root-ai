@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Route a task to its owning portfolio team and primary shared department.
+Route work to the correct portfolio owner and primary department.
 
 ## Procedure
 
@@ -10,7 +10,7 @@ Route a task to its owning portfolio team and primary shared department.
 2. Identify primary capability.
 3. Select one primary department.
 4. Add secondary departments only if necessary.
-5. Load only the owning team's required context.
+5. Load only required team context.
 6. Return or delegate.
 
 ## Capability Map
@@ -18,19 +18,17 @@ Route a task to its owning portfolio team and primary shared department.
 - process/workflow/onboarding -> Operations
 - code/API/infrastructure/security -> Engineering
 - acquisition/conversion/content -> Marketing
-- evidence/unknowns -> Research
+- research/evidence/unknowns -> Research
 - budgets/profitability -> Finance
 - contracts/compliance -> Legal
 
-## Efficiency
-
-For routing-only requests:
+## Routing-Only Rules
 
 - do not search the repository
-- do not load full TEAM.md files unless necessary
+- do not load unrelated team context
 - do not delegate
 - do not inspect implementation files
-- return concise routing output
+- keep output concise
 
 Format:
 
