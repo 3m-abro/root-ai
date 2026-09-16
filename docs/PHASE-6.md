@@ -1,3 +1,6 @@
+> Historical implementation/status record.
+> Do not load this document during normal task routing or execution unless phase history is explicitly required.
+
 # Phase 6 — curated static skills reviewed; specialist pilot next
 
 Status recorded: 2026-09-13. Source: the user's “ROOT Aufbauanleitung” conversation
