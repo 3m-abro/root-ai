@@ -112,3 +112,11 @@ Reviewer, QA, Security, and DevOps roles are mapped in
 [the specialist pilot](ENGINEERING-SPECIALISTS.md). They remain bounded children,
 not new durable profiles. ROOT dispatches them when Engineering is already a
 depth-one child; no nested delegation or permission increase is authorized.
+
+## Organizational Model
+
+Portfolio ownership, shared departments, and business/project team responsibilities are defined in:
+
+prompts/root/PORTFOLIO.md
+
+This document defines runtime and technical architecture only.

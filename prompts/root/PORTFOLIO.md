@@ -126,3 +126,29 @@ Required context should normally be limited to:
 
 Do not load TEAM.md, lead prompts, department prompts, repository code,
 or specialist skills merely to answer a routing-only question.
+
+## Context Compression
+
+Use Headroom selectively for large context payloads.
+
+Use Headroom when:
+
+- tool output is large
+- logs are verbose
+- repository search returns large results
+- delegated specialist output is lengthy
+- large structured data must remain retrievable
+- context is useful but not all details are immediately required
+
+Do not use Headroom for:
+
+- short routing decisions
+- small configuration files
+- concise user messages
+- approval boundaries
+- security warnings
+- exact commands that must remain unchanged
+
+Prefer:
+
+compress -> reason over compact representation -> retrieve exact details only when needed.
