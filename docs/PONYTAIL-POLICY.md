@@ -140,3 +140,19 @@ ROOT currently uses:
 - Ponytail: reduce unnecessary code and engineering complexity
 
 These solve different problems and are complementary.
+
+## Caveman comparison
+
+ROOT evaluated the Caveman skill against Ponytail.
+
+Caveman primarily compresses agent prose and communication style.
+
+Ponytail primarily reduces unnecessary implementation complexity while already
+limiting unrequested explanatory prose.
+
+ROOT does not install Caveman as a separate Engineering skill because the
+overlap does not justify another always-on instruction layer.
+
+ROOT retains one useful Caveman principle: routine Engineering communication
+should be concise, while security, destructive actions, production changes,
+approval boundaries, and ambiguity-sensitive procedures must remain explicit.

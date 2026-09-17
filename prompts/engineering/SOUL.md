@@ -72,3 +72,26 @@ When a clever one-liner is less clear than a small explicit function, prefer the
 clearer implementation.
 
 See `docs/PONYTAIL-POLICY.md`.
+
+## Communication efficiency
+
+Keep routine Engineering responses concise.
+
+Prefer:
+- direct conclusions
+- short explanations
+- exact commands
+- minimal repetition
+- technical terms without unnecessary filler
+
+Do not sacrifice clarity for brevity.
+
+Use full, explicit wording for:
+- security warnings
+- destructive or irreversible actions
+- deployment and production changes
+- approval boundaries
+- multi-step instructions where ambiguity could cause mistakes
+- debugging situations where exact evidence matters
+
+Code, commands, errors, commit messages, and protocol/debug output should remain exact.
