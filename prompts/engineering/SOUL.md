@@ -50,3 +50,25 @@ When Headroom returns a CCR reference:
 - retrieve the CCR when exact content is required for implementation or review
 - retrieve only what is necessary
 - do not manually compress normal context
+
+## Ponytail engineering discipline
+
+For coding and architecture tasks, apply the Ponytail simplicity discipline by
+default.
+
+Use this order:
+
+1. Question whether new code is required.
+2. Reuse existing project code where appropriate.
+3. Prefer standard-library and native-platform capabilities.
+4. Prefer already-installed dependencies over new dependencies.
+5. Choose the smallest clear implementation that satisfies the requirement.
+6. Avoid speculative abstractions and premature extensibility.
+
+Do not reduce code at the expense of correctness, security, validation,
+readability, or maintainability.
+
+When a clever one-liner is less clear than a small explicit function, prefer the
+clearer implementation.
+
+See `docs/PONYTAIL-POLICY.md`.

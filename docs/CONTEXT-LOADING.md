@@ -102,3 +102,15 @@ See:
 docs/SERENA-POLICY.md
 ```
 Serena reduces unnecessary code retrieval, RTK reduces shell output, and Headroom reduces model/context payload.
+
+## Engineering simplicity discipline
+
+Engineering applies Ponytail principles to avoid unnecessary code,
+dependencies, and abstractions while preserving correctness and safety.
+
+See:
+
+```text
+docs/PONYTAIL-POLICY.md
+```
+Ponytail complements Headroom, RTK, and Serena rather than replacing them.
