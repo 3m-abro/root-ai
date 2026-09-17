@@ -89,5 +89,16 @@ See:
 ```text
 docs/RTK-POLICY.md
 ```
-
 RTK reduces terminal output; Headroom reduces model/context payload. They solve different parts of the token-consumption problem and are intended to be used together.
+
+## Semantic code retrieval
+
+Engineering should use Serena for symbol-aware code navigation before reading
+large source files.
+
+See:
+
+```text
+docs/SERENA-POLICY.md
+```
+Serena reduces unnecessary code retrieval, RTK reduces shell output, and Headroom reduces model/context payload.
