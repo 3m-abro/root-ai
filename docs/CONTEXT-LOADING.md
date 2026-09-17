@@ -79,3 +79,15 @@ Do not load unrelated portfolio or department context.
 ## Historical Documents
 
 `docs/HISTORICAL/` content is loaded only when historical state is explicitly required.
+
+## Shell-output token reduction
+
+Routine shell output should be reduced with RTK where supported.
+
+See:
+
+```text
+docs/RTK-POLICY.md
+```
+
+RTK reduces terminal output; Headroom reduces model/context payload. They solve different parts of the token-consumption problem and are intended to be used together.
