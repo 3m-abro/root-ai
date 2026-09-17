@@ -42,3 +42,8 @@ coverage/
 
 # ROOT temporary agent output
 .tmp/
+
+# Serena
+.serena/*
+!.serena/project.yml
+!.serena/.gitignore
